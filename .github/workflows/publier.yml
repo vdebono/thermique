@@ -114,6 +114,12 @@ jobs:
 
           source = re.sub(r"\\begin\{equation\}(.*?)\\end\{equation\}", etiqueter, source, flags=re.S)
 
+          # Chapitres numérotés dans leur partie ? (\counterwithin{chapter}{part} dans le préambule)
+          sans_commentaires = re.sub(r"(?<!\\)%.*", "", source)
+          m = re.search(r"\\counterwithin(\*?)\{chapter\}\{part\}", sans_commentaires)
+          CHAP_PAR_PARTIE = bool(m)            # la numérotation repart à 1 à chaque partie
+          CHAP_PREFIXE = bool(m) and not m.group(1)   # et le numéro de partie précède : II.1
+
           os.makedirs("_construction", exist_ok=True)
           with open("_construction/complet.tex", "w", encoding="utf-8") as f:
               f.write(source)
@@ -260,11 +266,15 @@ jobs:
                   num = None
                   if niveau == 1:
                       c["partie"] += 1
+                      if CHAP_PAR_PARTIE:
+                          c["chap"] = 0
                       num = romain(c["partie"])
                   elif niveau == 2 and not sans_numero:
                       c["chap"] += 1
                       c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
                       num = str(c["chap"])
+                      if CHAP_PREFIXE and c["partie"] > 0:
+                          num = "%s.%d" % (romain(c["partie"]), c["chap"])
                       chapitre_courant[0] = num
                   elif niveau == 2:
                       c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
@@ -286,6 +296,8 @@ jobs:
                   blocs.extend(r if isinstance(r, list) else [r])
 
 
+          NUMERO_EN_TETE = r"^(?:[IVXLC]+\.)?[0-9]+(?:\.[0-9]+)*\s+"
+
           # ---------------------------------------------------------------------------
           # 3. Découpage en pages (une par chapitre)
           # ---------------------------------------------------------------------------
@@ -302,7 +314,7 @@ jobs:
                   continue
               if b["t"] == "Header" and b["c"][0] == 2:
                   titre = texte_de(b["c"][2])
-                  nom = slug(re.sub(r"^[0-9]+\s+", "", titre))
+                  nom = slug(re.sub(NUMERO_EN_TETE, "", titre))
                   base, i = nom, 2
                   while nom in noms:
                       nom, i = "%s-%d" % (base, i), i + 1
@@ -489,7 +501,7 @@ jobs:
                   contenu = couverture + contenu
                   titre_page = titre_livre
               else:
-                  titre_page = "%s · %s" % (re.sub(r"^[0-9]+\s+", "", p["titre"]), titre_livre)
+                  titre_page = "%s · %s" % (re.sub(NUMERO_EN_TETE, "", p["titre"]), titre_livre)
               precedent = '<a href="%s">← %s</a>' % (pages[i - 1]["fichier"], html.escape(pages[i - 1]["titre"])) if i > 0 else ""
               suivant = '<a href="%s">%s →</a>' % (pages[i + 1]["fichier"], html.escape(pages[i + 1]["titre"])) if i + 1 < len(pages) else ""
               with open(os.path.join(SORTIE, p["fichier"]), "w", encoding="utf-8") as f:
