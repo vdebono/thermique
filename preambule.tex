@@ -1,0 +1,25 @@
+% =====================================================================
+%  Préambule : packages et réglages communs.
+%  Restez sur des packages courants : ceux-ci sont tous compris
+%  par la version web du cours.
+% =====================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+% Numérotation des équations et figures par chapitre : (1.1), (1.2)…
+\numberwithin{equation}{chapter}
+
+% Exercices et corrigés
+% Sur le site, « exercice » devient un encadré et « corrige » un encadré dépliable.
+\theoremstyle{definition}
+\newtheorem{exercice}{Exercice}[chapter]
+\newtheorem*{corrige}{Corrigé}
+
+% Vos macros
+\newcommand{\unite}[1]{\,\mathrm{#1}}
