@@ -1,0 +1,593 @@
+# Fichier de publication commun à tous les projets Overleaf du site.
+# À placer dans chaque dépôt GitHub, sous : .github/workflows/publier.yml
+#
+# À chaque envoi depuis Overleaf, il convertit le LaTeX en page web et la publie :
+#   - classe book    -> un livre en ligne (une page par chapitre, sommaire latéral) ;
+#   - autre classe   -> une seule page (accueil, CV…).
+# Dans le projet d'accueil (celui qui contient menu.txt), il publie en plus
+# le style, la police et le menu partagés par toutes les pages.
+name: Publier la page web
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le projet Overleaf
+        uses: actions/checkout@v4
+
+      - name: Installer Pandoc et la police Latin Modern
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq pandoc fonts-lmodern
+
+      - name: Construire la page web
+        run: |
+          # Fichier LaTeX principal : main.tex, sinon le premier fichier avec \documentclass
+          if [ -f main.tex ]; then TEX=main.tex; else TEX=$(grep -l '\\documentclass' *.tex | head -n 1); fi
+          echo "Fichier principal : $TEX"
+          mkdir -p _site
+
+          # Images utilisées dans le document (PNG, JPG, SVG, GIF)
+          find . \( -path ./_site -o -path ./_construction -o -path ./.git \) -prune -o -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.svg' -o -iname '*.gif' \) -print \
+            | while read -r f; do mkdir -p "_site/$(dirname "$f")"; cp "$f" "_site/$f"; done
+
+          cat > entete.html <<'EOF'
+          <nav class="barre" id="menu"><a class="nom" href="/">Victor De Bono</a><span class="liens"></span></nav>
+          EOF
+          cat > tete.html <<'EOF'
+          <link rel="stylesheet" href="/commun/style.css">
+          <script src="/commun/menu.js" defer></script>
+          EOF
+
+          if grep -qE '\\documentclass(\[[^]]*\])?\{book\}' "$TEX"; then
+            # Classe book : un livre en ligne (une page par chapitre, sommaire latéral)
+            cat > livre.py <<'FIN_LIVRE'
+          #!/usr/bin/env python3
+          """Convertit un livre LaTeX (classe book) en site web paginé, façon bookdown.
+
+          - une page par chapitre, sommaire latéral (parties, chapitres, sections) ;
+          - numérotation des chapitres, sections, équations, figures et exercices
+            identique au PDF (numérotation par chapitre) ;
+          - renvois \\ref et \\eqref actifs d'une page à l'autre ;
+          - exercices encadrés, corrigés dépliables ;
+          - pages précédente / suivante.
+
+          Usage : python3 livre.py main.tex _site
+          """
+          import html
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+          import unicodedata
+
+          SOURCE, SORTIE = sys.argv[1], sys.argv[2]
+          RACINE = os.path.dirname(os.path.abspath(SOURCE))
+
+
+          # ---------------------------------------------------------------------------
+          # 1. Assembler le source (\input, \include) et étiqueter les équations
+          # ---------------------------------------------------------------------------
+          def lire(chemin):
+              if not chemin.endswith(".tex"):
+                  chemin += ".tex"
+              with open(os.path.join(RACINE, chemin), encoding="utf-8") as f:
+                  texte = f.read()
+              sortie = []
+              for ligne in texte.splitlines(keepends=True):
+                  code = re.split(r"(?<!\\)%", ligne, maxsplit=1)[0]
+                  m = re.search(r"\\(?:input|include)\{([^}]+)\}", code)
+                  if m:
+                      sortie.append(code[: m.start()] + lire(m.group(1)) + code[m.end():] + "\n")
+                  else:
+                      sortie.append(ligne)
+              return "".join(sortie)
+
+
+          source = lire(os.path.basename(SOURCE))
+
+          # Toute équation numérotée (environnement equation) reçoit une étiquette,
+          # même sans \label, pour que la numérotation web suive celle du PDF.
+          compteur_auto = [0]
+
+
+          def etiqueter(m):
+              corps = m.group(1)
+              if "\\label" not in corps:
+                  compteur_auto[0] += 1
+                  corps += "\\label{eq-auto-%d}" % compteur_auto[0]
+              return "\\begin{equation}" + corps + "\\end{equation}"
+
+
+          source = re.sub(r"\\begin\{equation\}(.*?)\\end\{equation\}", etiqueter, source, flags=re.S)
+
+          os.makedirs("_construction", exist_ok=True)
+          with open("_construction/complet.tex", "w", encoding="utf-8") as f:
+              f.write(source)
+
+          doc = json.loads(subprocess.run(
+              ["pandoc", "_construction/complet.tex", "-f", "latex", "-t", "json"],
+              check=True, capture_output=True, text=True).stdout)
+          API = doc["pandoc-api-version"]
+
+
+          # ---------------------------------------------------------------------------
+          # Outils
+          # ---------------------------------------------------------------------------
+          def texte_de(inlines):
+              """Texte brut d'une liste d'éléments en ligne."""
+              morceaux = []
+
+              def w(x):
+                  if isinstance(x, dict):
+                      t = x.get("t")
+                      if t == "Str":
+                          morceaux.append(x["c"])
+                      elif t in ("Space", "SoftBreak", "LineBreak"):
+                          morceaux.append(" ")
+                      elif t == "Math":
+                          morceaux.append(x["c"][1])
+                      else:
+                          w(x.get("c"))
+                  elif isinstance(x, list):
+                      for v in x:
+                          w(v)
+
+              w(inlines)
+              return "".join(morceaux).strip()
+
+
+          def str_(s):
+              return {"t": "Str", "c": s}
+
+
+          def span(classe, inlines):
+              return {"t": "Span", "c": [["", [classe], []], inlines]}
+
+
+          def slug(s):
+              s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+              s = re.sub(r"[^a-zA-Z0-9]+", "-", s).strip("-").lower()
+              return s or "page"
+
+
+          def romain(n):
+              valeurs = [(10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")]
+              r = ""
+              for v, l in valeurs:
+                  while n >= v:
+                      r, n = r + l, n - v
+              return r
+
+
+          # ---------------------------------------------------------------------------
+          # 2. Numérotation
+          # ---------------------------------------------------------------------------
+          numeros = {}          # étiquette -> numéro affiché
+          c = {"partie": 0, "chap": 0, "sec": 0, "ssec": 0, "eq": 0, "fig": 0, "ex": 0}
+          chapitre_courant = ["0"]
+
+
+          def numeroter_contenu(x):
+              """Parcourt récursivement un élément et numérote équations, figures, exercices."""
+              if isinstance(x, list):
+                  resultat = []
+                  for el in x:
+                      r = numeroter_contenu(el)
+                      if isinstance(r, list) and isinstance(el, dict) and el.get("t") == "Div":
+                          resultat.extend(r)
+                      else:
+                          resultat.append(r)
+                  return resultat
+              if not isinstance(x, dict):
+                  return x
+              t = x.get("t")
+              ch = chapitre_courant[0]
+
+              if t == "Math" and x["c"][0]["t"] == "DisplayMath":
+                  tex = x["c"][1]
+                  etiquettes = re.findall(r"\\label\{([^}]+)\}", tex)
+                  if etiquettes:
+                      for e in etiquettes:
+                          c["eq"] += 1
+                          num = "%s.%d" % (ch, c["eq"])
+                          numeros[e] = num
+                          tex = tex.replace("\\label{%s}" % e, "\\tag{%s}" % num, 1)
+                      x["c"][1] = tex
+                      return {"t": "Span", "c": [[etiquettes[0], ["equation"], []], [x]]}
+                  return x
+
+              if t == "Figure":
+                  attr, legende, contenu = x["c"]
+                  c["fig"] += 1
+                  num = "%s.%d" % (ch, c["fig"])
+                  if attr[0]:
+                      numeros[attr[0]] = num
+                  if legende[1] and legende[1][0]["t"] in ("Plain", "Para"):
+                      legende[1][0]["c"] = [span("numero", [str_("Figure %s" % num)]), str_(" :"), {"t": "Space"}] + legende[1][0]["c"]
+                  x["c"] = [attr, legende, numeroter_contenu(contenu)]
+                  return x
+
+              if t == "Div":
+                  attr, blocs = x["c"]
+                  classes = attr[1]
+                  blocs = numeroter_contenu(blocs)
+                  if "exercice" in classes or "corrige" in classes:
+                      # Retirer l'en-tête « Exercice 1.1. » ajouté par Pandoc
+                      if blocs and blocs[0]["t"] == "Para" and blocs[0]["c"] and blocs[0]["c"][0]["t"] == "Strong":
+                          reste = blocs[0]["c"][1:]
+                          while reste and (reste[0]["t"] == "Space" or (reste[0]["t"] == "Str" and reste[0]["c"] == ".")):
+                              reste = reste[1:]
+                          blocs[0]["c"] = reste
+                      if "exercice" in classes:
+                          c["ex"] += 1
+                          num = "%s.%d" % (ch, c["ex"])
+                          if attr[0]:
+                              numeros[attr[0]] = num
+                          titre = {"t": "Para", "c": [span("titre-encadre", [str_("Exercice %s" % num)])]}
+                          return [{"t": "Div", "c": [[attr[0], ["exercice"], attr[2]], [titre] + blocs]}]
+                      return [
+                          {"t": "RawBlock", "c": ["html", '<details class="corrige"><summary>Corrigé</summary>']},
+                          *blocs,
+                          {"t": "RawBlock", "c": ["html", "</details>"]},
+                      ]
+                  x["c"] = [attr, blocs]
+                  return x
+
+              if "c" in x:
+                  x["c"] = numeroter_contenu(x["c"])
+              return x
+
+
+          blocs = []
+          for b in doc["blocks"]:
+              if b["t"] == "Header":
+                  niveau, attr, contenu = b["c"]
+                  sans_numero = "unnumbered" in attr[1]
+                  num = None
+                  if niveau == 1:
+                      c["partie"] += 1
+                      num = romain(c["partie"])
+                  elif niveau == 2 and not sans_numero:
+                      c["chap"] += 1
+                      c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
+                      num = str(c["chap"])
+                      chapitre_courant[0] = num
+                  elif niveau == 2:
+                      c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
+                      chapitre_courant[0] = "*"
+                  elif niveau == 3 and not sans_numero and chapitre_courant[0] != "*":
+                      c["sec"] += 1
+                      c["ssec"] = 0
+                      num = "%s.%d" % (chapitre_courant[0], c["sec"])
+                  elif niveau == 4 and not sans_numero and chapitre_courant[0] != "*":
+                      c["ssec"] += 1
+                      num = "%s.%d.%d" % (chapitre_courant[0], c["sec"], c["ssec"])
+                  if num:
+                      if attr[0]:
+                          numeros[attr[0]] = num
+                      b["c"][2] = [span("numero", [str_(num)]), {"t": "Space"}] + contenu
+                  blocs.append(b)
+              else:
+                  r = numeroter_contenu(b)
+                  blocs.extend(r if isinstance(r, list) else [r])
+
+
+          # ---------------------------------------------------------------------------
+          # 3. Découpage en pages (une par chapitre)
+          # ---------------------------------------------------------------------------
+          pages = [{"fichier": "index.html", "titre": "Accueil", "blocs": [], "partie": None}]
+          sommaire = []        # éléments : ("partie", texte) / ("chap", texte, page) / ("sec", texte, page, id)
+          ids_page = {}        # id -> fichier
+          partie_courante = None
+          noms = set(["index"])
+
+          for b in blocs:
+              if b["t"] == "Header" and b["c"][0] == 1:
+                  partie_courante = texte_de(b["c"][2])
+                  sommaire.append(("partie", b["c"][2]))
+                  continue
+              if b["t"] == "Header" and b["c"][0] == 2:
+                  titre = texte_de(b["c"][2])
+                  nom = slug(re.sub(r"^[0-9]+\s+", "", titre))
+                  base, i = nom, 2
+                  while nom in noms:
+                      nom, i = "%s-%d" % (base, i), i + 1
+                  noms.add(nom)
+                  pages.append({"fichier": nom + ".html", "titre": titre, "blocs": [], "partie": partie_courante})
+                  sommaire.append(("chap", b["c"][2], nom + ".html"))
+              elif b["t"] == "Header" and b["c"][0] == 3:
+                  sommaire.append(("sec", b["c"][2], pages[-1]["fichier"], b["c"][1][0]))
+              pages[-1]["blocs"].append(b)
+
+          # Où se trouve chaque identifiant ?
+          def collecter_ids(x, fichier):
+              if isinstance(x, dict):
+                  if x.get("t") in ("Header", "Div", "Span", "Figure", "Table", "CodeBlock"):
+                      attr = x["c"][1] if x["t"] == "Header" else x["c"][0]
+                      if isinstance(attr, list) and attr and isinstance(attr[0], str) and attr[0]:
+                          ids_page[attr[0]] = fichier
+                  for v in x.values():
+                      collecter_ids(v, fichier)
+              elif isinstance(x, list):
+                  for v in x:
+                      collecter_ids(v, fichier)
+
+
+          for p in pages:
+              collecter_ids(p["blocs"], p["fichier"])
+
+
+          # ---------------------------------------------------------------------------
+          # 4. Renvois (\ref, \eqref) : bon numéro et bonne page
+          # ---------------------------------------------------------------------------
+          def corriger_liens(x, fichier):
+              if isinstance(x, dict):
+                  if x.get("t") == "Link":
+                      attr, contenu, (url, titre) = x["c"]
+                      kv = dict(attr[2])
+                      if "reference" in kv:
+                          cible = kv["reference"]
+                          num = numeros.get(cible, "??")
+                          texte = "(%s)" % num if kv.get("reference-type") == "eqref" else num
+                          x["c"][1] = [str_(texte)]
+                          url = "#" + cible
+                      if url.startswith("#"):
+                          page = ids_page.get(url[1:], fichier)
+                          x["c"][2] = [(url if page == fichier else page + url), titre]
+                      return x
+                  for k, v in x.items():
+                      x[k] = corriger_liens(v, fichier)
+              elif isinstance(x, list):
+                  return [corriger_liens(v, fichier) for v in x]
+              return x
+
+
+          for p in pages:
+              p["blocs"] = corriger_liens(p["blocs"], p["fichier"])
+
+
+          # ---------------------------------------------------------------------------
+          # 5. Conversion en HTML
+          # ---------------------------------------------------------------------------
+          def en_html(blocs_ou_inlines, en_ligne=False):
+              if en_ligne:
+                  blocs_ou_inlines = [{"t": "Plain", "c": blocs_ou_inlines}]
+              d = {"pandoc-api-version": API, "meta": {}, "blocks": blocs_ou_inlines}
+              return subprocess.run(["pandoc", "-f", "json", "-t", "html5", "--mathjax"],
+                                    input=json.dumps(d), check=True, capture_output=True, text=True).stdout
+
+
+          meta = doc["meta"]
+          titre_livre = texte_de(meta.get("title", {}).get("c", [])) or "Cours"
+          auteurs = ", ".join(texte_de(a["c"]) for a in meta.get("author", {}).get("c", []) if isinstance(a, dict))
+          date = texte_de(meta.get("date", {}).get("c", []))
+
+          # Sommaire HTML (le même sur toutes les pages, page active marquée)
+          def sommaire_html(page_active):
+              lignes, ouvert = ["<ul>"], False
+              for el in sommaire:
+                  if el[0] == "partie":
+                      if ouvert:
+                          lignes.append("</ul></li>")
+                          ouvert = False
+                      lignes.append('<li class="partie">%s</li>' % en_html(el[1], True).strip())
+                  elif el[0] == "chap":
+                      if ouvert:
+                          lignes.append("</ul></li>")
+                      actif = ' class="actif"' if el[2] == page_active else ""
+                      lignes.append('<li class="chapitre"><a href="%s"%s>%s</a><ul>' % (el[2], actif, en_html(el[1], True).strip()))
+                      ouvert = True
+                  else:
+                      lignes.append('<li class="section"><a href="%s#%s">%s</a></li>' % (el[2], el[3], en_html(el[1], True).strip()))
+              if ouvert:
+                  lignes.append("</ul></li>")
+              lignes.append("</ul>")
+              return "\n".join(lignes)
+
+
+          GABARIT = """<!DOCTYPE html>
+          <html lang="fr">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>{titre_page}</title>
+          <link rel="stylesheet" href="/commun/style.css">
+          <script src="/commun/menu.js" defer></script>
+          <script>window.MathJax = {{ tex: {{ tags: "ams" }} }};</script>
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" defer></script>
+          <style>
+            body {{ max-width: 76rem; }}
+            .livre {{ display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 3rem; align-items: start; }}
+            .livre-sommaire {{ position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto;
+                              font-size: .85rem; line-height: 1.35; padding-right: .5rem; border-right: 1px solid #ddd; }}
+            .livre-sommaire summary {{ display: none; }}
+            .livre-sommaire .titre-livre {{ display: block; font-weight: bold; text-decoration: none; margin-bottom: 1rem; font-size: .95rem; }}
+            .livre-sommaire ul {{ list-style: none; margin: 0; padding: 0; }}
+            .livre-sommaire li.partie {{ font-weight: bold; margin: 1.1rem 0 .4rem; text-transform: uppercase; font-size: .8rem; letter-spacing: .03em; }}
+            .livre-sommaire li.chapitre > a {{ display: block; margin: .45rem 0 .15rem; text-decoration: none; }}
+            .livre-sommaire li.chapitre > a.actif {{ font-weight: bold; }}
+            .livre-sommaire li.section a {{ display: block; padding-left: 1rem; color: #555; text-decoration: none; margin: .1rem 0; }}
+            .livre-sommaire a:hover {{ text-decoration: underline; }}
+            .livre-contenu {{ max-width: 46rem; }}
+            .livre-contenu h2 {{ font-size: 1.7rem; border: none; margin-top: 0; }}
+            .livre-contenu h3 {{ font-size: 1.3rem; border-bottom: 1px solid #000; padding-bottom: .2rem; margin-top: 2.2rem; }}
+            .livre-contenu h4 {{ font-size: 1.1rem; margin-top: 1.6rem; }}
+            .livre-contenu .numero {{ margin-right: .3rem; }}
+            .livre-contenu figcaption .numero {{ margin-right: 0; }}
+            .titre-couverture {{ font-size: 2rem; line-height: 1.25; margin: 0 0 .5rem; border: none; }}
+            .auteur-couverture {{ font-size: 1.1rem; margin: 0; }}
+            .date-couverture {{ color: #555; margin: .2rem 0 2rem; }}
+            .sommaire-complet ul {{ list-style: none; padding: 0; margin: 0; }}
+            .sommaire-complet li.partie {{ font-weight: bold; margin: 1.6rem 0 .3rem; text-transform: uppercase; font-size: .9rem; letter-spacing: .03em; }}
+            .sommaire-complet li.chapitre > a {{ display: block; margin: .35rem 0 .1rem; text-decoration: none; }}
+            .sommaire-complet li.section a {{ display: block; padding-left: 1.4rem; font-size: .92rem; color: #444; text-decoration: none; }}
+            .sommaire-complet a:hover {{ text-decoration: underline; }}
+            span.equation {{ display: block; }}
+            .exercice {{ border: 1px solid #000; border-left-width: 3px; padding: .2rem 1rem; margin: 1.5rem 0 .5rem; }}
+            .exercice .titre-encadre {{ font-weight: bold; }}
+            details.corrige {{ border: 1px solid #000; border-left-width: 3px; padding: .5rem 1rem; margin: 0 0 1.5rem; }}
+            details.corrige summary {{ cursor: pointer; font-weight: bold; }}
+            .pages-voisines {{ display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid #000;
+                              margin-top: 3rem; padding-top: 1rem; font-size: .95rem; }}
+            .pages-voisines a {{ text-decoration: none; }}
+            .pages-voisines a:hover {{ text-decoration: underline; }}
+            @media (max-width: 900px) {{
+              .livre {{ display: block; }}
+              .livre-sommaire {{ position: static; max-height: none; border: 1px solid #000; padding: .6rem 1rem; margin-bottom: 2rem; }}
+              .livre-sommaire summary {{ display: list-item; cursor: pointer; font-weight: bold; }}
+              .livre-sommaire:not([open]) > :not(summary) {{ display: none; }}
+            }}
+          </style>
+          </head>
+          <body>
+          <nav class="barre" id="menu"><a class="nom" href="/">Victor De Bono</a><span class="liens"></span></nav>
+          <div class="livre">
+          <details class="livre-sommaire" open>
+          <summary>Sommaire</summary>
+          <a class="titre-livre" href="index.html">{titre_livre}</a>
+          {sommaire}
+          </details>
+          <main class="livre-contenu">
+          {contenu}
+          <nav class="pages-voisines"><span>{precedent}</span><span>{suivant}</span></nav>
+          </main>
+          </div>
+          <script>
+            // Sur grand écran le sommaire reste ouvert ; sur téléphone il est replié par défaut.
+            if (window.matchMedia("(max-width: 900px)").matches) document.querySelector(".livre-sommaire").removeAttribute("open");
+          </script>
+          </body>
+          </html>
+          """
+
+          os.makedirs(SORTIE, exist_ok=True)
+          for i, p in enumerate(pages):
+              contenu = en_html(p["blocs"])
+              if p["fichier"] == "index.html":
+                  couverture = '<h1 class="titre-couverture">%s</h1>' % html.escape(titre_livre)
+                  if auteurs:
+                      couverture += '<p class="auteur-couverture">%s</p>' % html.escape(auteurs)
+                  if date:
+                      couverture += '<p class="date-couverture">%s</p>' % html.escape(date)
+                  if not p["blocs"]:
+                      # Pas de préface : la page d'accueil du cours affiche le sommaire complet
+                      contenu = '<div class="sommaire-complet">%s</div>' % sommaire_html(None)
+                  contenu = couverture + contenu
+                  titre_page = titre_livre
+              else:
+                  titre_page = "%s · %s" % (re.sub(r"^[0-9]+\s+", "", p["titre"]), titre_livre)
+              precedent = '<a href="%s">← %s</a>' % (pages[i - 1]["fichier"], html.escape(pages[i - 1]["titre"])) if i > 0 else ""
+              suivant = '<a href="%s">%s →</a>' % (pages[i + 1]["fichier"], html.escape(pages[i + 1]["titre"])) if i + 1 < len(pages) else ""
+              with open(os.path.join(SORTIE, p["fichier"]), "w", encoding="utf-8") as f:
+                  f.write(GABARIT.format(titre_page=html.escape(titre_page), titre_livre=html.escape(titre_livre),
+                                         sommaire=sommaire_html(p["fichier"]), contenu=contenu,
+                                         precedent=precedent, suivant=suivant))
+
+          print("%d pages écrites dans %s" % (len(pages), SORTIE))
+          FIN_LIVRE
+            python3 livre.py "$TEX" _site
+          else
+            # Autre classe (article…) : une seule page
+            pandoc "$TEX" -f latex -t html5 -s --mathjax -V lang=fr \
+              --include-in-header tete.html --include-before-body entete.html -o _site/index.html
+          fi
+
+          # ---------- Éléments partagés : seulement dans le projet d'accueil ----------
+          if [ -f menu.txt ]; then
+            cp menu.txt _site/menu.txt
+            mkdir -p _site/commun/fonts
+            cp /usr/share/texmf/fonts/opentype/public/lm/lmroman10-{regular,italic,bold,bolditalic}.otf _site/commun/fonts/
+
+            cat > _site/commun/style.css <<'EOF'
+          @font-face { font-family: "LM"; src: url("fonts/lmroman10-regular.otf"); }
+          @font-face { font-family: "LM"; src: url("fonts/lmroman10-italic.otf"); font-style: italic; }
+          @font-face { font-family: "LM"; src: url("fonts/lmroman10-bold.otf"); font-weight: bold; }
+          @font-face { font-family: "LM"; src: url("fonts/lmroman10-bolditalic.otf"); font-weight: bold; font-style: italic; }
+          html { font-size: 18px; background: #fff; }
+          body { font-family: "LM", Georgia, serif; line-height: 1.55; color: #111; background: #fff;
+                 max-width: 48rem; margin: 0 auto; padding: 0 16px 4rem; }
+          a { color: #000; text-underline-offset: 0.18em; }
+          img { max-width: 100%; height: auto; }
+          header#title-block-header { display: none; }
+          .barre { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+                   gap: .5rem 1.5rem; border-bottom: 1px solid #000; padding: 1rem 0 .6rem; margin-bottom: 2rem;
+                   min-height: 1.6rem; }
+          .barre a { text-decoration: none; }
+          .barre .nom { font-size: 1.25rem; }
+          .barre .liens a { margin-left: 1.2rem; }
+          .barre .liens a.actif { border-bottom: 2px solid #000; }
+          .center { text-align: center; }
+          .center strong:first-child { font-size: 1.8rem; }
+          h1 { font-size: 1.35rem; border-bottom: 1px solid #000; padding-bottom: .25rem; margin-top: 2.2rem; }
+          h2 { font-size: 1.1rem; margin-top: 1.6rem; }
+          figure { margin: 1.5rem 0; text-align: center; }
+          figcaption { font-size: .9rem; }
+          dl { display: grid; grid-template-columns: 8rem 1fr; column-gap: 1rem; }
+          dt { font-weight: bold; font-size: .9rem; padding-top: .15rem; }
+          dd { margin: 0 0 .9rem; }
+          dd p { margin: 0; }
+          dd ul { margin: .3rem 0; padding-left: 1.1rem; }
+          @media (max-width: 576px) {
+            dl { display: block; }
+            dd { margin-left: 0; }
+            .barre .liens a { margin: 0 1.2rem 0 0; }
+          }
+          EOF
+
+            cat > _site/commun/menu.js <<'EOF'
+          // Remplit la barre de navigation à partir de /menu.txt (projet d'accueil)
+          (function () {
+            var cible = document.querySelector("#menu .liens");
+            if (!cible) return;
+            fetch("/menu.txt", { cache: "no-cache" })
+              .then(function (r) { return r.ok ? r.text() : ""; })
+              .then(function (texte) {
+                var ici = location.pathname;
+                texte.split(/\r?\n/).forEach(function (ligne) {
+                  ligne = ligne.trim();
+                  if (!ligne || ligne.charAt(0) === "%" || ligne.indexOf("|") < 0) return;
+                  var morceaux = ligne.split("|");
+                  var a = document.createElement("a");
+                  a.textContent = morceaux[0].trim();
+                  a.href = morceaux.slice(1).join("|").trim();
+                  var cheminLien = new URL(a.href, location.href).pathname;
+                  var actif = cheminLien === "/" ? (ici === "/" || ici === "/index.html")
+                                                 : ici.indexOf(cheminLien) === 0;
+                  if (actif) a.className = "actif";
+                  cible.appendChild(a);
+                });
+              })
+              .catch(function () {});
+          })();
+          EOF
+          fi
+
+      - name: Préparer la publication
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publier sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
