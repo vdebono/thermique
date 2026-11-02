@@ -268,13 +268,13 @@ jobs:
                       c["partie"] += 1
                       if CHAP_PAR_PARTIE:
                           c["chap"] = 0
-                      num = romain(c["partie"])
+                      num = str(c["partie"])
                   elif niveau == 2 and not sans_numero:
                       c["chap"] += 1
                       c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
                       num = str(c["chap"])
                       if CHAP_PREFIXE and c["partie"] > 0:
-                          num = "%s.%d" % (romain(c["partie"]), c["chap"])
+                          num = "%s.%d" % (c["partie"], c["chap"])
                       chapitre_courant[0] = num
                   elif niveau == 2:
                       c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
