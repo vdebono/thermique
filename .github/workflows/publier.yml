@@ -301,7 +301,7 @@ jobs:
           # ---------------------------------------------------------------------------
           # 3. Découpage en pages (une par chapitre)
           # ---------------------------------------------------------------------------
-          pages = [{"fichier": "index.html", "titre": "Accueil", "blocs": [], "partie": None}]
+          pages = [{"fichier": "index.html", "titre": "Accueil", "blocs": [], "partie": None, "couverture": True}]
           sommaire = []        # éléments : ("partie", texte) / ("chap", texte, page) / ("sec", texte, page, id)
           ids_page = {}        # id -> fichier
           partie_courante = None
@@ -324,6 +324,15 @@ jobs:
               elif b["t"] == "Header" and b["c"][0] == 3:
                   sommaire.append(("sec", b["c"][2], pages[-1]["fichier"], b["c"][1][0]))
               pages[-1]["blocs"].append(b)
+
+          # Sans préface, pas de page de couverture : le site s'ouvre directement
+          # sur le premier chapitre, qui devient index.html.
+          if not pages[0]["blocs"] and len(pages) > 1:
+              pages.pop(0)
+              ancien = pages[0]["fichier"]
+              pages[0]["fichier"] = "index.html"
+              sommaire = [tuple("index.html" if v == ancien else v for v in el) if el[0] != "partie" else el
+                          for el in sommaire]
 
           # Où se trouve chaque identifiant ?
           def collecter_ids(x, fichier):
@@ -489,7 +498,7 @@ jobs:
           os.makedirs(SORTIE, exist_ok=True)
           for i, p in enumerate(pages):
               contenu = en_html(p["blocs"])
-              if p["fichier"] == "index.html":
+              if p.get("couverture"):
                   couverture = '<h1 class="titre-couverture">%s</h1>' % html.escape(titre_livre)
                   if auteurs:
                       couverture += '<p class="auteur-couverture">%s</p>' % html.escape(auteurs)
