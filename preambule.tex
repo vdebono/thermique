@@ -15,6 +15,8 @@
 % Chapitres numérotés dans leur partie : II.1, II.2… (la numérotation repart à 1
 % à chaque partie). Supprimez cette ligne pour une numérotation continue 1, 2, 3…
 \counterwithin{chapter}{part}
+\renewcommand{\thepart}{\arabic{part}}
+\frenchsetup{PartNameFull=false}
 
 % Équations et figures numérotées par chapitre : (II.1.1), (II.1.2)…
 \numberwithin{equation}{chapter}
