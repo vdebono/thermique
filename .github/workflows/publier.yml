@@ -1,17 +1,24 @@
-# Fichier de publication commun à tous les projets Overleaf du site.
-# À placer dans chaque dépôt GitHub, sous : .github/workflows/publier.yml
+# =====================================================================
+#  publier.yml : fichier de publication commun à tous les projets du site
+#  À placer dans chaque dépôt GitHub, sous : .github/workflows/publier.yml
 #
-# À chaque envoi depuis Overleaf, il convertit le LaTeX en page web et la publie :
-#   - classe book    -> un livre en ligne (une page par chapitre, sommaire latéral) ;
-#   - autre classe   -> une seule page (accueil, CV…).
-# Dans le projet d'accueil (celui qui contient menu.txt), il publie en plus
-# le style, la police et le menu partagés par toutes les pages.
+#  À chaque envoi (Push) depuis Overleaf, il convertit le LaTeX en page web
+#  et la publie sur GitHub Pages :
+#    - classe book  -> un livre en ligne (une page par chapitre, sommaire) ;
+#    - autre classe -> une seule page (accueil, CV…).
+#  Dans le projet d'accueil (celui qui contient menu.txt), il publie en plus
+#  le style, la police et le menu partagés par toutes les pages.
+# =====================================================================
 name: Publier la page web
 
 on:
   push:
     branches: [main, master]
   workflow_dispatch:
+
+# ---- À MODIFIER : le nom affiché en haut à gauche de chaque page ----
+env:
+  NOM_DU_SITE: "Victor De Bono"
 
 permissions:
   contents: read
@@ -43,9 +50,7 @@ jobs:
           find . \( -path ./_site -o -path ./_construction -o -path ./.git \) -prune -o -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.svg' -o -iname '*.gif' \) -print \
             | while read -r f; do mkdir -p "_site/$(dirname "$f")"; cp "$f" "_site/$f"; done
 
-          cat > entete.html <<'EOF'
-          <nav class="barre" id="menu"><a class="nom" href="/">Victor De Bono</a><span class="liens"></span></nav>
-          EOF
+          python3 -c 'import html, os; print("<nav class=\"barre\" id=\"menu\"><a class=\"nom\" href=\"/\">%s</a><span class=\"liens\"></span></nav>" % html.escape(os.environ["NOM_DU_SITE"]))' > entete.html
           cat > tete.html <<'EOF'
           <link rel="stylesheet" href="/commun/style.css">
           <script src="/commun/menu.js" defer></script>
@@ -120,6 +125,52 @@ jobs:
           CHAP_PAR_PARTIE = bool(m)            # la numérotation repart à 1 à chaque partie
           CHAP_PREFIXE = bool(m) and not m.group(1)   # et le numéro de partie précède : II.1
 
+          # Parties en chiffres arabes ? (\renewcommand{\thepart}{\arabic{part}} dans le préambule)
+          PARTIES_ARABES = bool(re.search(r"\\renewcommand\s*\{?\\thepart\}?\s*\{\s*\\arabic\s*\{part\}\s*\}", sans_commentaires))
+
+          # Nom affiché en haut à gauche de chaque page (réglé dans publier.yml)
+          NOM_SITE = html.escape(os.environ.get("NOM_DU_SITE", ""))
+
+          # ---------------------------------------------------------------------------
+          # Bibliographie (biblatex : \addbibresource ; BibTeX : \bibliography)
+          #   \cite, \textcite, \parencite… -> citation auteur-année, liée à la bibliographie
+          #   \footcite                     -> note de bas de page avec citation courte
+          #   \footfullcite                 -> note de bas de page avec la référence complète
+          #   \printbibliography            -> page « Bibliographie » (comme dans le PDF)
+          # ---------------------------------------------------------------------------
+          BIBS = []
+          for m in re.finditer(r"\\addbibresource\s*(?:\[[^\]]*\])?\s*\{([^}]+)\}", sans_commentaires):
+              BIBS.append(m.group(1).strip())
+          for m in re.finditer(r"\\bibliography\s*\{([^}]+)\}", sans_commentaires):
+              for b in m.group(1).split(","):
+                  b = b.strip()
+                  BIBS.append(b if b.endswith(".bib") else b + ".bib")
+          BIBS = [b for b in dict.fromkeys(BIBS) if os.path.exists(os.path.join(RACINE, b))]
+
+          CITATIONS_PLEINES = []    # (clés, avant, après) de chaque \footfullcite
+          MARQUE_BIBLIO = "ZZBIBLIOGRAPHIEZZ"
+
+          if BIBS:
+              def citation_pleine(m):
+                  opts = [o for o in (m.group(1), m.group(2)) if o is not None]
+                  avant, apres = (opts[0], opts[1]) if len(opts) == 2 else ("", opts[0] if opts else "")
+                  avant, apres = avant.replace("~", "\u00a0"), apres.replace("~", "\u00a0")
+                  CITATIONS_PLEINES.append(([k.strip() for k in m.group(3).split(",")], avant, apres))
+                  return "\\footnote{ZZBIBPLEINE%dZZ}" % (len(CITATIONS_PLEINES) - 1)
+
+              source = re.sub(r"\\footfullcite\s*(?:\[([^\]]*)\])?\s*(?:\[([^\]]*)\])?\s*\{([^}]+)\}", citation_pleine, source)
+              source = re.sub(r"\\footcite\s*((?:\[[^\]]*\]\s*){0,2})\{([^}]+)\}", r"\\footnote{\\cite\1{\2}}", source)
+
+              def bibliographie(options):
+                  options = options or ""
+                  if "heading=none" in options.replace(" ", ""):
+                      return "\n\n%s\n\n" % MARQUE_BIBLIO
+                  t = re.search(r"title\s*=\s*\{([^}]*)\}", options)
+                  return "\n\\chapter*{%s}\n\n%s\n\n" % (t.group(1) if t else "Bibliographie", MARQUE_BIBLIO)
+
+              source = re.sub(r"\\printbibliography\s*(\[[^\]]*\])?", lambda m: bibliographie(m.group(1)), source)
+              source = re.sub(r"\\bibliography\s*\{[^}]+\}", lambda m: bibliographie(""), source)
+
           os.makedirs("_construction", exist_ok=True)
           with open("_construction/complet.tex", "w", encoding="utf-8") as f:
               f.write(source)
@@ -128,6 +179,86 @@ jobs:
               ["pandoc", "_construction/complet.tex", "-f", "latex", "-t", "json"],
               check=True, capture_output=True, text=True).stdout)
           API = doc["pandoc-api-version"]
+
+
+          def pandoc_json(document, *options):
+              return json.loads(subprocess.run(["pandoc", "-f", "json", "-t", "json", *options],
+                                               input=json.dumps(document), check=True,
+                                               capture_output=True, text=True).stdout)
+
+
+          if BIBS:
+              options_bib = ["--citeproc", "-M", "lang=fr"]
+              for b in BIBS:
+                  options_bib += ["--bibliography", os.path.join(RACINE, b)]
+
+              # Emplacement de la bibliographie
+              bib_affichee = False
+              for i, b in enumerate(doc["blocks"]):
+                  if b["t"] == "Para" and b["c"] == [{"t": "Str", "c": MARQUE_BIBLIO}]:
+                      doc["blocks"][i] = {"t": "Div", "c": [["refs", [], []], []]}
+                      bib_affichee = True
+
+              # Les références citées seulement en note complète figurent aussi dans la bibliographie
+              cles_pleines = sorted({k for cles, _, _ in CITATIONS_PLEINES for k in cles})
+              if cles_pleines:
+                  doc["meta"]["nocite"] = {"t": "MetaInlines", "c": [{"t": "Cite", "c": [
+                      [{"citationId": k, "citationPrefix": [], "citationSuffix": [], "citationMode": {"t": "NormalCitation"},
+                        "citationNoteNum": 0, "citationHash": 0} for k in cles_pleines], []]}]}
+
+              doc = pandoc_json(doc, *options_bib,
+                                *(["-M", "link-citations=true"] if bib_affichee else ["-M", "suppress-bibliography=true"]))
+
+              # Références complètes, pour les \footfullcite
+              if CITATIONS_PLEINES:
+                  tout = {"pandoc-api-version": API, "blocks": [], "meta": {"nocite": {"t": "MetaInlines", "c": [{"t": "Cite", "c": [
+                      [{"citationId": "*", "citationPrefix": [], "citationSuffix": [], "citationMode": {"t": "NormalCitation"},
+                        "citationNoteNum": 0, "citationHash": 0}], []]}]}}}
+                  entrees = {}
+
+                  def lire_entrees(x):
+                      if isinstance(x, dict):
+                          if x.get("t") == "Div" and x["c"][0][0].startswith("ref-"):
+                              blocs_entree = x["c"][1]
+                              if blocs_entree and blocs_entree[0]["t"] in ("Para", "Plain"):
+                                  entrees[x["c"][0][0][4:]] = blocs_entree[0]["c"]
+                              return
+                          for v in x.values():
+                              lire_entrees(v)
+                      elif isinstance(x, list):
+                          for v in x:
+                              lire_entrees(v)
+
+                  lire_entrees(pandoc_json(tout, *options_bib)["blocks"])
+
+                  def note_pleine(i):
+                      cles, avant, apres = CITATIONS_PLEINES[i]
+                      contenu = []
+                      if avant:
+                          contenu += [{"t": "Str", "c": avant}, {"t": "Space"}]
+                      for j, k in enumerate(cles):
+                          if j:
+                              contenu += [{"t": "Str", "c": ";"}, {"t": "Space"}]
+                          contenu += entrees.get(k, [{"t": "Str", "c": "[%s ?]" % k}])
+                      if apres:
+                          if contenu and contenu[-1].get("t") == "Str" and contenu[-1]["c"].endswith("."):
+                              contenu[-1] = {"t": "Str", "c": contenu[-1]["c"][:-1]}
+                          contenu += [{"t": "Str", "c": ","}, {"t": "Space"}, {"t": "Str", "c": apres + "."}]
+                      return [{"t": "Para", "c": contenu}]
+
+                  def remplacer_notes(x):
+                      if isinstance(x, dict):
+                          if x.get("t") == "Note":
+                              texte = json.dumps(x["c"])
+                              m = re.search(r"ZZBIBPLEINE(\d+)ZZ", texte)
+                              if m:
+                                  return {"t": "Note", "c": note_pleine(int(m.group(1)))}
+                          return {k: remplacer_notes(v) for k, v in x.items()}
+                      if isinstance(x, list):
+                          return [remplacer_notes(v) for v in x]
+                      return x
+
+                  doc["blocks"] = remplacer_notes(doc["blocks"])
 
 
           # ---------------------------------------------------------------------------
@@ -168,6 +299,10 @@ jobs:
               s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
               s = re.sub(r"[^a-zA-Z0-9]+", "-", s).strip("-").lower()
               return s or "page"
+
+
+          def numero_partie(n):
+              return str(n) if PARTIES_ARABES else romain(n)
 
 
           def romain(n):
@@ -268,13 +403,13 @@ jobs:
                       c["partie"] += 1
                       if CHAP_PAR_PARTIE:
                           c["chap"] = 0
-                      num = str(c["partie"])
+                      num = numero_partie(c["partie"])
                   elif niveau == 2 and not sans_numero:
                       c["chap"] += 1
                       c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
                       num = str(c["chap"])
                       if CHAP_PREFIXE and c["partie"] > 0:
-                          num = "%s.%d" % (c["partie"], c["chap"])
+                          num = "%s.%d" % (numero_partie(c["partie"]), c["chap"])
                       chapitre_courant[0] = num
                   elif niveau == 2:
                       c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
@@ -296,7 +431,7 @@ jobs:
                   blocs.extend(r if isinstance(r, list) else [r])
 
 
-          NUMERO_EN_TETE = r"^(?:[IVXLC]+\.)?[0-9]+(?:\.[0-9]+)*\s+"
+          NUMERO_EN_TETE = r"^(?:[IVXLC0-9]+\.)?[0-9]+(?:\.[0-9]+)*\s+"
 
           # ---------------------------------------------------------------------------
           # 3. Découpage en pages (une par chapitre)
@@ -445,8 +580,8 @@ jobs:
             .livre-sommaire a:hover {{ text-decoration: underline; }}
             .livre-contenu {{ max-width: 46rem; }}
             .livre-contenu h2 {{ font-size: 1.7rem; border: none; margin-top: 0; }}
-            .livre-contenu h3 {{ font-size: 1.3rem; border-bottom: 1px solid #000; padding-bottom: .2rem; margin-top: 2.2rem; }}
-            .livre-contenu h4 {{ font-size: 1.1rem; margin-top: 1.6rem; }}
+            .livre-contenu h3 {{ font-size: 1.3rem; border-bottom: 1px solid #000; padding-bottom: .2rem; margin-top: 1.6rem; }}
+            .livre-contenu h4 {{ font-size: 1.1rem; margin-top: 1.2rem; }}
             .livre-contenu .numero {{ margin-right: .3rem; }}
             .livre-contenu figcaption .numero {{ margin-right: 0; }}
             .titre-couverture {{ font-size: 2rem; line-height: 1.25; margin: 0 0 .5rem; border: none; }}
@@ -458,6 +593,10 @@ jobs:
             .sommaire-complet li.section a {{ display: block; padding-left: 1.4rem; font-size: .92rem; color: #444; text-decoration: none; }}
             .sommaire-complet a:hover {{ text-decoration: underline; }}
             span.equation {{ display: block; }}
+            .footnotes {{ font-size: .88rem; margin-top: 2.5rem; }}
+            .footnotes hr {{ width: 30%; margin-left: 0; border: 0; border-top: 1px solid #000; }}
+            .footnote-ref sup {{ font-size: .75em; }}
+            #refs .csl-entry {{ padding-left: 1.6em; text-indent: -1.6em; margin-bottom: .6em; }}
             .exercice {{ border: 1px solid #000; border-left-width: 3px; padding: .2rem 1rem; margin: 1.5rem 0 .5rem; }}
             .exercice .titre-encadre {{ font-weight: bold; }}
             details.corrige {{ border: 1px solid #000; border-left-width: 3px; padding: .5rem 1rem; margin: 0 0 1.5rem; }}
@@ -475,7 +614,7 @@ jobs:
           </style>
           </head>
           <body>
-          <nav class="barre" id="menu"><a class="nom" href="/">Victor De Bono</a><span class="liens"></span></nav>
+          <nav class="barre" id="menu"><a class="nom" href="/">{nom_site}</a><span class="liens"></span></nav>
           <div class="livre">
           <details class="livre-sommaire" open>
           <summary>Sommaire</summary>
@@ -514,7 +653,7 @@ jobs:
               precedent = '<a href="%s">← %s</a>' % (pages[i - 1]["fichier"], html.escape(pages[i - 1]["titre"])) if i > 0 else ""
               suivant = '<a href="%s">%s →</a>' % (pages[i + 1]["fichier"], html.escape(pages[i + 1]["titre"])) if i + 1 < len(pages) else ""
               with open(os.path.join(SORTIE, p["fichier"]), "w", encoding="utf-8") as f:
-                  f.write(GABARIT.format(titre_page=html.escape(titre_page), titre_livre=html.escape(titre_livre),
+                  f.write(GABARIT.format(nom_site=NOM_SITE, titre_page=html.escape(titre_page), titre_livre=html.escape(titre_livre),
                                          sommaire=sommaire_html(p["fichier"]), contenu=contenu,
                                          precedent=precedent, suivant=suivant))
 
@@ -538,8 +677,8 @@ jobs:
           @font-face { font-family: "LM"; src: url("fonts/lmroman10-italic.otf"); font-style: italic; }
           @font-face { font-family: "LM"; src: url("fonts/lmroman10-bold.otf"); font-weight: bold; }
           @font-face { font-family: "LM"; src: url("fonts/lmroman10-bolditalic.otf"); font-weight: bold; font-style: italic; }
-          html { font-size: 18px; background: #fff; }
-          body { font-family: "LM", Georgia, serif; line-height: 1.55; color: #111; background: #fff;
+          html { font-size: 16px; background: #fff; }
+          body { font-family: "LM", Georgia, serif; line-height: 1.45; color: #111; background: #fff;
                  max-width: 48rem; margin: 0 auto; padding: 0 16px 4rem; }
           a { color: #000; text-underline-offset: 0.18em; }
           img { max-width: 100%; height: auto; }
@@ -553,8 +692,8 @@ jobs:
           .barre .liens a.actif { border-bottom: 2px solid #000; }
           .center { text-align: center; }
           .center strong:first-child { font-size: 1.8rem; }
-          h1 { font-size: 1.35rem; border-bottom: 1px solid #000; padding-bottom: .25rem; margin-top: 2.2rem; }
-          h2 { font-size: 1.1rem; margin-top: 1.6rem; }
+          h1 { font-size: 1.35rem; border-bottom: 1px solid #000; padding-bottom: .25rem; margin-top: 1.8rem; }
+          h2 { font-size: 1.1rem; margin-top: 1.3rem; }
           figure { margin: 1.5rem 0; text-align: center; }
           figcaption { font-size: .9rem; }
           dl { display: grid; grid-template-columns: 8rem 1fr; column-gap: 1rem; }
