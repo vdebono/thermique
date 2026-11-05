@@ -1,0 +1,33 @@
+% =====================================================================
+%  Introduction à la thermique du bâtiment pour les architectes
+%  Projet principal : ne contient que la structure du livre.
+%  Le contenu est dans le dossier parties/ (un fichier par partie).
+% =====================================================================
+\documentclass[11pt,a4paper,oneside,openany]{book}
+\input{preambule}
+
+\title{Introduction à la thermique du bâtiment pour les architectes}
+\author{Victor De Bono}
+\date{ENSAP Lille, A321 Ambiances\\ \today}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\mainmatter
+\tableofcontents
+
+\newpage
+\input{parties/00-intro}
+\input{parties/01-transferts-chaleur}
+\input{parties/02-transferts-vapeur}
+\input{parties/03-climat}
+\input{parties/04-thermique-architecturale}
+\input{parties/05-cadre-reglementaire}
+\input{parties/06-conclusion}
+
+
+\backmatter
+\printbibliography[heading=bibintoc]   % bibintoc = l'ajoute à la table des matières
+\end{document}

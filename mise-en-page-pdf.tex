@@ -1,0 +1,64 @@
+% =====================================================================
+%  Mise en page du PDF  (ignorée par le site web)
+%  À appeler à la fin de preambule.tex :  \input{mise-en-page-pdf}
+%  Pour revenir à la mise en page d'origine, supprimez cette ligne.
+% =====================================================================
+\geometry{a4paper, margin=2.2cm, top=2.6cm, bottom=2.4cm}
+\usepackage{microtype}
+
+% Paragraphes séparés par un espace plutôt qu'indentés
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em plus 0.2em}
+
+% Titres compacts
+\usepackage{titlesec}
+\titleclass{\part}{top}                 % la partie ouvre une page, sans page dédiée
+\titleformat{\part}[display]{\centering\normalfont\Large\bfseries}
+  {Partie~\thepart}{0.4em}{\LARGE}[\vspace{0.4em}\titlerule]
+\titlespacing*{\part}{0pt}{0pt}{2.5em}
+
+\titleclass{\chapter}{straight}         % les chapitres s'enchaînent sans saut de page
+\titleformat{\chapter}{\normalfont\Large\bfseries}{\thechapter}{0.8em}{}
+\titlespacing*{\chapter}{0pt}{2.2em}{1.2em}
+
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{0.8em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.5em}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{1em}{0.3em}
+
+% En-tête : titre du chapitre à gauche, numéro de page à droite
+% (seulement dans le corps du cours ; page de titre et sommaire restent sobres)
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\pagestyle{plain}
+\appto\mainmatter{\pagestyle{fancy}}
+\fancyhf{}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\quad #1}{}}
+\fancyhead[L]{\small\leftmark}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Table des matières : parties, chapitres et sections, sur peu de pages
+\usepackage[titles]{tocloft}
+\setcounter{tocdepth}{1}
+\setlength{\cftbeforepartskip}{1.2em}
+\setlength{\cftbeforechapskip}{0.4em}
+\setlength{\cftchapnumwidth}{2.4em}
+\setlength{\cftsecindent}{2.4em}
+\setlength{\cftsecnumwidth}{3em}
+
+% Exercices encadrés d'un filet à gauche, comme sur le site
+\usepackage[most]{tcolorbox}
+\tcolorboxenvironment{exercice}{blanker, breakable, borderline west={1.5pt}{0pt}{black},
+  left=8pt, before skip=0.8em, after skip=0.4em}
+\tcolorboxenvironment{corrige}{blanker, breakable, borderline west={0.5pt}{0pt}{black},
+  left=8pt, before skip=0.4em, after skip=0.8em}
+
+% Page de titre
+\usepackage{titling}
+\pretitle{\begin{center}\vspace*{6cm}\Huge\bfseries}
+\posttitle{\par\end{center}\vspace{0.8em}\hrule\vspace{1.2em}}
+\preauthor{\begin{center}\Large}
+\postauthor{\par\end{center}}
+\predate{\begin{center}\large}
+\postdate{\par\end{center}}

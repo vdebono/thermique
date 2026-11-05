@@ -1,45 +1,697 @@
 % =====================================================================
-\part{Transferts de chaleur}
+%  Partie 2 -- Transferts de chaleur
 % =====================================================================
+\part{Transferts de chaleur}
 
-\chapter{Conduction}
+% =====================================================================
+\subsection*{Modes de transfert de chaleur}
+Il existe trois types de transfert de chaleur :
+\begin{itemize}
+  \item \textbf{La conduction} : la chaleur se transmet par contact.
+  Concerne les solides, les liquides et les gaz. C'est la transmission de proche en proche de l'agitation thermique, sans déplacement de matière.
+  \emph{La conduction est le transfert thermique principal dans les solides.}
+  \item \textbf{La convection} : la chaleur se transmet par déplacement du fluide.
+  Concerne les liquides et les gaz. Il y a déplacement macroscopique de matière : le fluide se déplace avec sa température.
+  \emph{La convection est le transfert thermique principal dans les fluides (liquides et gaz).}
+  \item \textbf{Le rayonnement} : la chaleur se transmet par onde électromagnétique.
+  Concerne tout état de la matière.
+  \emph{Le rayonnement est le seul transfert de chaleur qui fonctionne dans le vide.}
+\end{itemize}
+% [Figures : schémas maison conduction / convection / rayonnement]
+
+
+\chapter{La conduction}
 \label{chap:conduction}
 
 \section{Mécanisme de la conduction}
+La conduction représente la transmission, de proche en proche, de l'agitation thermique sans déplacement de matière. La conduction est le transfert thermique principal dans les solides. Chaque particule de matière transmet une partie de sa température aux particules voisines par contact.
+
+Certains matériaux conduisent plus ou moins la chaleur ; les matériaux conduisant très peu la chaleur sont qualifiés d'isolants thermiques.
+% [Figure : ustensiles de cuisine]
+
+\subsection*{Rappels}
+La conductivité thermique, notée $\lambda$, est la quantité d'énergie traversant 1\,m$^2$ de matériau, d'un mètre d'épaisseur, sous une différence de 1 degré de température, en $\mathrm{W\cdot m^{-1}\cdot K^{-1}}$ ou (W/m.K).
+\begin{itemize}
+  \item C'est la capacité d'un matériau à conduire la chaleur.
+  \item C'est une caractéristique intrinsèque des matériaux homogènes.
+\end{itemize}
+
+\subsection*{La conduction en architecture}
+Comprendre la conduction aide à concevoir des parois qui limitent la propagation de la chaleur par conduction et évite de trop réchauffer ou refroidir le bâtiment.
+
+Pour cela, on utilise des isolants thermiques (qui conduisent peu la chaleur). Les matériaux isolants sont généralement des matériaux qui contiennent de l'air emprisonné dans le matériau. Cet air emprisonné limite la conduction puisque les particules sont plus espacées dans un gaz que dans un solide ; le transfert thermique par conduction est donc réduit. Les isolants sont donc souvent des matériaux assez légers, tels que des laines ou des mousses.
 
 \section{Loi de Fourier}
-\label{sec:fourier}
+
+\subsection*{Flux thermique}
+\textbf{Le flux thermique} (ou flux de chaleur) est la puissance qui traverse une surface au cours d'un transfert thermique, c'est-à-dire l'énergie thermique transférée par unité de temps. Il s'exprime en watts (W) :
+\begin{equation}
+  \phi = \frac{Q}{\Delta t}
+\end{equation}
+avec $\phi$ le flux thermique en watts (W), $Q$ l'énergie thermique en joules (J) et $\Delta t$ la durée en secondes (s).
+
+En un point de cette surface, \textbf{la densité de flux thermique} est le flux thermique par unité de surface. Elle s'exprime en watts par mètre carré (W/m$^2$) :
+\begin{equation}
+  \varphi = \frac{\phi}{S}
+\end{equation}
+avec $\varphi$ la densité de flux thermique (W/m$^2$), $\phi$ le flux thermique (W) et $S$ la surface en mètres carrés (m$^2$).
+
+\subsection*{Sur une paroi}
+La conduction existe dès qu'il y a une différence de température à travers un matériau.
+La loi de Fourier\footfullcite{fourier1822} formalise précisément cette idée :
+\textbf{la densité de flux thermique est proportionnelle à la différence de température}.
+
+En 1D, dans une paroi chaude d'un côté et froide de l'autre, la température évolue linéairement dans l'épaisseur de cette paroi. Le flux de chaleur s'écrit donc :
+
+\begin{equation}
+  \varphi = \frac{\lambda}{e}\,\Delta T
+\end{equation}
+
+avec :
+$\varphi$ la densité de flux thermique en watts par mètre carré (W/m$^2$), $\lambda$ la conductivité thermique en watts par mètre kelvin (W/m.K), $\Delta T$ l'écart de température en kelvins (K) et $e$ l'épaisseur de la paroi en mètres (m).
 
 
+
+Le flux de chaleur est donc proportionnel à la différence de température ($\Delta T$), inversement proportionnel à l'épaisseur ($e$) et dépendant du matériau ($\lambda$ étant différent pour chaque matériau).
+
+\subsection*{Interprétation}
+Lorsque $\lambda$ augmente, le matériau conduit plus : il y a donc plus de pertes. Lorsque $e$ augmente, la conduction diminue : l'isolation est donc meilleure. Lorsque $\Delta T$ augmente, les pertes augmentent :
+  \begin{itemize}
+    \item chauffer à 20\,°C quand il fait 0\,°C dehors : $\Delta T = 20$\,°C ;
+    \item chauffer à 20\,°C quand il fait $-10$\,°C dehors : $\Delta T = 30$\,°C.
+  \end{itemize}
+
+\subsection*{Résistance et conductance d'une paroi}
+Dans le domaine du bâtiment, on définit deux grandeurs lorsque l'on caractérise une paroi :
+\begin{itemize}
+  \item \textbf{la résistance thermique} : $\displaystyle R = \frac{e}{\lambda}$ \quad en (m$^2$.K/W) ;
+  \item \textbf{la conductance thermique} : $\displaystyle U = \frac{\lambda}{e}$ \quad en (W/m$^2$.K).
+\end{itemize}
+On peut alors réécrire :
+\begin{equation}
+  \varphi = U\,\Delta T = \frac{1}{R}\,\Delta T
+\end{equation}
+
+
+\subsection*{Sur une paroi composée}
+Dans le bâtiment, les enveloppes d'un projet sont souvent composées de plusieurs couches de différents matériaux.
+On distingue alors deux cas :
+
+\begin{itemize}
+  \item les surfaces planes en série (lorsque les matériaux sont les uns à la suite des autres : par exemple un mur en brique, puis isolant, puis enduit)
+  \item les surfaces planes en parallèle (lorsque les matériaux sont parallèles les uns aux autres, dans le cas des murs à ossature)
+\end{itemize}
+
+
+Dans le cas des \textbf{surfaces en série}, on additionnera les résistances de chacun des matériaux pour obtenir la résistance totale de l'enveloppe :
+\begin{equation}
+  R_{\mathrm{totale}} = \sum R = R_1 + R_2 + \dots + R_n
+  = \frac{e_1}{\lambda_1} + \frac{e_2}{\lambda_2} + \dots + \frac{e_n}{\lambda_n}
+\end{equation}
+
+Dans le cas des \textbf{surfaces en parallèle}, on additionnera les conductances de chacun des matériaux, rapportées proportionnellement à leurs surfaces face au flux de chaleur, pour obtenir la conductance équivalente totale de l'enveloppe :
+\begin{equation}
+  U_{\mathrm{totale}} = \frac{1}{R_{\mathrm{totale}}} = \sum \frac{S_n}{S}\,U_n
+  = \frac{S_1}{S}\frac{\lambda_1}{e_1} + \frac{S_2}{S}\frac{\lambda_2}{e_2} + \dots + \frac{S_n}{S}\frac{\lambda_n}{e_n}
+\end{equation}
+avec $S$ la surface totale de la paroi et $S_n$ la surface occupée par le matériau $n$.
 
 \section{Conduction dans les parois}
 
+\subsection*{Présentation}
+Dans un bâtiment chauffé, les parois sont les surfaces en contact entre l'intérieur chaud et l'extérieur froid (ou l'inverse en été).
+Elles jouent donc un rôle dans :
+\begin{itemize}
+  \item les pertes de chaleur en hiver
+  \item les gains de chaleur en été
+  \item le confort thermique
+  \item la consommation énergétique
+\end{itemize}
+La conduction est le principal mode de transfert dans les parois opaques et donc dans l'enveloppe du projet.
+
+\subsection*{Application 1}
+On cherche à réaliser deux parois ayant la même résistance thermique :
+\begin{itemize}
+  \item la première en béton avec $\lambda = 1{,}7$\,W/m.K ;
+  \item la seconde avec un isolant avec $\lambda = 0{,}04$\,W/m.K.
+\end{itemize}
+Quelle sera alors l'épaisseur de la paroi en béton équivalente à 5\,cm d'isolant ?
+
+\textit{Réponse :} plus de 2\,m d'épaisseur.
+
+\subsection*{Application 2}
+Comparer la résistance des trois parois suivantes :
+\begin{itemize}
+  \item un mur en pierre de 50\,cm, $\lambda_{\mathrm{pierre}} = 1{,}4$\,W/m.K ;
+  \item un mur composé de 18\,cm de brique ($\lambda_{\mathrm{brique}} = 0{,}8$\,W/m.K), de 2\,cm de lame d'air ($\lambda_{\mathrm{air}} = 0{,}023$\,W/m.K), de 22\,cm d'isolant ($\lambda_{\mathrm{laine}} = 0{,}04$\,W/m.K) et de 1\,cm de plaque de plâtre ($\lambda_{\textrm{plâtre}} = 0{,}25$\,W/m.K) ;
+  \item un mur composé de 41\,cm de brique.
+\end{itemize}
+\textit{Réponse :} à compléter.
+% TODO : réponse à compléter
+
+Dans une paroi isolée, le matériau porteur ne sert pas à isoler : il sert à porter. L'isolation est assurée par l'isolant.
+
+\subsection*{Parois verticales, toitures et planchers}
+% [Figures : Îlot Poreux, Tolila+Gilliland -- façade et coupe]
+\paragraph{Les murs}
+\begin{itemize}
+  \item Conduction très dépendante de l'épaisseur d'isolant.
+  \item Importance de la continuité d'isolation.
+\end{itemize}
+
+\paragraph{Les planchers}
+\begin{itemize}
+  \item Conduction importante du plancher bas vers le sol froid sans isolation.
+  \item En rénovation, l'isolation peut être difficile.
+\end{itemize}
+
+\paragraph{Les toitures}
+\begin{itemize}
+  \item Plus fortes pertes car surface importante.
+  \item Isolant généralement plus épais (traitement particulier).
+\end{itemize}
+
 \section{Ponts thermiques}
+
+\subsection*{Définition}
+\textbf{Un pont thermique est une zone de l'enveloppe où la résistance thermique est plus faible, provoquant une concentration du flux thermique et des déperditions supplémentaires}\footnote{Énergie Plus : \texttt{https://energieplus-lesite.be/}}.
+
+C'est une zone où la chaleur « contourne » l'isolation et circule plus facilement.
+
+\textbf{Un pont thermique est un chemin préférentiel pour la chaleur.}
+
+\subsection*{Exemples}
+\begin{itemize}
+  \item Entre mur et sol (coupe).
+  \item Entre mur et plancher intermédiaire (coupe).
+  \item Entre raccords de murs (plan).
+  \item Entre mur et toiture (coupe).
+  \item Au niveau d'un balcon (coupe).
+  \item Au niveau d'une menuiserie (plan et/ou coupe).
+\end{itemize}
+% [Figures : schémas des ponts thermiques]
+
+\subsection*{Conséquences}
+\begin{itemize}
+  \item \textbf{Pertes de chaleur importantes.} Un pont thermique peut représenter 20\,\% des pertes totales d'un bâtiment mal conçu.
+  \item \textbf{Inconfort.} Même si l'air de la pièce est à 20\,°C, si un point de la paroi est à 14\,°C il peut y avoir une sensation de froid.
+  \item \textbf{Condensation et moisissures.} Une zone froide attire la vapeur d'eau. Si la température de surface descend sous la température de rosée, il y a condensation dans la paroi.
+  \item \textbf{Dégradation des matériaux.} L'humidité peut entraîner l'apparition de champignons et fortement dégrader des isolants ou les peintures.
+\end{itemize}
 
 \section{Isolation}
 
-\section{Exercices}
+Pour les murs, on distingue 3 grands types d'isolation :
+\begin{itemize}
+  \item l'isolation thermique par l'intérieur (ITI) ;
+  \item l'isolation thermique par l'extérieur (ITE) ;
+  \item l'isolation entre ossature.
+\end{itemize}
+Chacun de ces types a ses avantages et ses inconvénients.
 
-\chapter{Convection}
+Dans tous les cas, ce qui assurera une bonne isolation sera la continuité de l'isolant, c'est-à-dire qu'il ne doit pas y avoir de point de rupture.
+Si pont thermique il y a, il sera considéré comme un « malus » dans le calcul de la performance globale du bâtiment par le bureau d'études.
+Il conviendra alors de le solutionner et, le cas échéant, de s'assurer qu'il n'y aura pas de condensation à cet endroit.
+
+\subsection*{L'isolation thermique par l'extérieur}
+\paragraph{Avantages}
+\begin{itemize}
+  \item Une ITE aura tendance à être plus performante qu'une ITI car elle permettra une continuité de l'isolation sur tout le pourtour du bâtiment et évitera la plupart des ponts thermiques.
+  \item L'ITE a également l'avantage de ne pas réduire la surface habitable.
+\end{itemize}
+
+\paragraph{Inconvénients}
+Afin d'assurer la continuité de l'isolation, certains points peuvent être compliqués à traiter :
+\begin{itemize}
+  \item les balcons ;
+  \item la jonction plancher bas / mur extérieur ;
+  \item la jonction plancher haut / mur extérieur ;
+  \item le pourtour des menuiseries.
+\end{itemize}
+
+\paragraph{Comment gérer les inconvénients}
+\begin{itemize}
+  \item \textbf{Les balcons} : utilisation de rupteurs thermiques, dissociation du balcon et de la salle.
+  \item \textbf{La jonction plancher bas / mur extérieur} : ajout d'isolant rigide et enterré.
+  \item \textbf{La jonction plancher haut / mur extérieur} : retour d'isolant sur l'acrotère.
+  \item \textbf{Le pourtour des menuiseries} : pose des menuiseries dans le même alignement que l'isolant extérieur, à l'aide d'une sous-construction faisant office d'appui de fenêtre.
+\end{itemize}
+% [Figures : rupteurs, isolant enterré, acrotère, menuiserie, chantiers ITE]
+
+\subsection*{L'isolation thermique par l'intérieur}
+\paragraph{Avantages}
+\begin{itemize}
+  \item Plus de liberté architecturale en façade.
+  \item Ne dénature pas la façade (réhabilitation patrimoniale).
+\end{itemize}
+
+\paragraph{Inconvénients}
+\begin{itemize}
+  \item Beaucoup de ponts thermiques.
+  \item Perte de surface de plancher.
+\end{itemize}
+
+\paragraph{Comment gérer les inconvénients}
+\begin{itemize}
+  \item \textbf{Les ponts thermiques murs / dalle} : on réalise des retours d'isolant (coupe), sur 70 à 80\,cm.
+  \item \textbf{Les ponts thermiques murs / murs} : on réalise des retours d'isolant (plan).
+\end{itemize}
+% [Figures : retours d'isolant ; chantiers ITI]
+
+\subsection*{L'isolation des murs à ossature}
+L'isolation d'une structure à ossature (type poteaux / poutres) se fait bien souvent « entre poteaux » (même si on peut choisir de laisser la structure apparente, puis de rapporter une structure secondaire d'isolation).
+
+On aura alors une isolation entre poteaux, mais bien souvent également une surcouche d'isolation afin d'éviter le pont thermique avec les poteaux.
+% [Figures : vue en plan ; composition d'un mur à ossature bois]
+
+\subsection*{L'isolation des toitures}
+\begin{itemize}
+  \item L'isolation en toiture (qui représente près de 30\,\% des pertes de chaleur) sera souvent très importante.
+  \item Il existe des milliers de techniques pour isoler tous les types de toitures : combles habités ou perdus, toitures plates, terrasses, végétalisées, etc.
+  \item Il est important de chercher systématiquement ce qui sera le plus adapté au projet en fonction de ce que l'on veut faire.
+\end{itemize}
+
+Exemple de détail (toiture « sarking » et mur isolé par l'extérieur)\footnote{Énergie Plus, rubrique Isolation, UCL, Architecture et Climat.} :
+\begin{enumerate}
+  \item Cale de bois pour empêcher le glissement des panneaux isolants.
+  \item Panneaux isolants rigides au-dessus des chevrons ou des fermettes (toiture « sarking »).
+  \item Contre-lattes.
+  \item Bavette insérée partiellement dans le panneau isolant pour que les eaux infiltrées s'écoulent dans la gouttière.
+  \item Mur isolé par l'extérieur (cas de panneaux isolants revêtus d'un enduit : isolant collé au support, armature et couche d'enrobage, enduit de finition).
+  \item Profilé d'interruption fixé mécaniquement à la maçonnerie.
+  \item Isolant de remplissage pour assurer la continuité de la couche isolante entre la toiture et le mur.
+\end{enumerate}
+% [Figures : détail sarking ; toiture-terrasse végétalisée]
+
+\subsection*{L'isolation des menuiseries}
+\begin{itemize}
+  \item Les fenêtres sont considérées comme des surfaces de perte de chaleur : il conviendra de soigner les détails.
+  \item Dans le calcul de la performance thermique globale d'une construction, on prendra la surface vitrée totale à laquelle on affectera un coefficient de déperdition en fonction du type de vitrage.
+\end{itemize}
+
+\paragraph{Exemple en ITI}
+\begin{enumerate}
+  \item Mur existant avec enduit de finition.
+  \item Isolant thermique (posé entre lattes, par exemple).
+  \item Pare-vapeur éventuel.
+  \item Panneau de finition.
+  \item Retour d'isolation collé à la maçonnerie (épaisseur minimum de 2\,cm). Si, après avoir disqué l'enduit de finition existant, il n'y a pas assez de place pour le retour d'isolation, il faut remplacer le châssis par un châssis à dormant plus large.
+  \item Prolongement du pare-vapeur jusqu'à la menuiserie ou pose d'un isolant peu perméable à la vapeur (mousse synthétique, par exemple).
+  \item Joint souple d'étanchéité pour empêcher toute infiltration d'air intérieur derrière l'isolant.
+  \item Nouvelle tablette.
+\end{enumerate}
+
+\paragraph{Exemple en ITE}
+\begin{enumerate}
+  \item Mur existant + enduit intérieur.
+  \item Arrêt d'enduit + mastic.
+  \item Panneau isolant collé.
+  \item Armature et mortier d'enrobage.
+  \item Enduit de finition.
+  \item Armature d'angle.
+  \item Retour d'isolation au niveau du linteau (panneau collé revêtu des mêmes couches que le reste du mur existant).
+  \item Seuil en tôle pliée.
+  \item Retour d'isolation au niveau du seuil.
+\end{enumerate}
+
+\paragraph{Types de pose}
+\begin{itemize}
+  \item \textbf{La pose en tunnel} s'effectue dans l'épaisseur du mur. \emph{Neuf ou rénovation.}
+  \item \textbf{La pose en feuillure} : il s'agit d'encastrer la feuillure à l'intérieur du mur. On peut l'utiliser en rénovation lorsqu'on ne conserve pas le dormant de l'ancienne fenêtre. En retirant la totalité de la menuiserie, il reste une feuillure : une entaille pratiquée dans toute la longueur de l'arête d'une pièce pour recevoir une autre pièce. \emph{Neuf ou rénovation.}
+  \item \textbf{La pose en applique} : la menuiserie est directement à ras du mur intérieur, avec doublage isolant intérieur. \emph{Neuf.}
+  \item \textbf{La pose en rénovation} se fait toujours sur l'ancien dormant. Le but est d'installer les nouvelles fenêtres sur le cadre des anciennes. \emph{Rénovation.}
+\end{itemize}
+% [Figure : types de pose, UCL Architecture et Climat]
+
+\subsection*{Autres solutions}
+On trouvera encore bien d'autres solutions d'isolation, plus ou moins performantes, plus ou moins coûteuses, plus ou moins écologiques. On peut par exemple citer :
+\begin{itemize}
+  \item le double mur ;
+  \item les panneaux « sandwichs » ;
+  \item les isolants minces.
+\end{itemize}
+Il faut faire des recherches pour trouver la solution qui convient au projet.
+
+% =====================================================================
+\chapter{La convection}
 \label{chap:convection}
 
 \section{Mécanisme de la convection}
 
+\subsection*{La chaleur se transmet par déplacement du fluide}
+La convection concerne les liquides et les gaz. \emph{Il y a déplacement macroscopique de matière.}
+\emph{La convection est le transfert thermique principal dans les fluides (liquides et gaz).}
+% [Figures : schéma maison convection ; convection dans une casserole]
+
+Exemples : la lampe à « lave », la montgolfière, certains courants marins.
+% [Figures : lampe à lave, montgolfière, courants marins]
+
 \section{Convection naturelle et convection forcée}
+
+\subsection*{La convection naturelle}
+La convection naturelle (ou libre) : au contact d'un objet chaud, la température de l'air augmente et sa densité diminue. On observe donc une poussée de l'air chaud par l'air froid vers le haut (poussée d'Archimède), qui produit alors un courant ascendant.
+
+Cette masse d'air chaud emporte alors avec elle une partie de la chaleur cédée par l'objet chaud.
+Le processus se poursuit, car de l'air froid vient remplacer l'air chaud, etc.
+
+\textbf{La convection naturelle : le différentiel de température provoque le mouvement.}
+
+\subsection*{La convection forcée}
+Le fluide (gaz ou liquide) est mis en mouvement par un phénomène extérieur, comme un ventilateur, une pompe, un compresseur, le vent, etc.
+
+\textbf{La convection forcée : le mouvement est forcé.}
+
+\subsection*{Aparté : les brasseurs d'air}
+Un brasseur d'air peut fonctionner en mode été ou en mode hiver.
+% [Figures : brasseur d'air en mode été / mode hiver]
+Pour aller plus loin, voir les études de l'ADEME\footnote{ADEME, \emph{BRASSE : brasseurs d'air, une solution de sobriété et d'efficacité}, 2024 ; ADEME, \emph{BRASSE II : base de données des performances de 50 brasseurs d'air plafonniers à pales}, 2026. \texttt{https://librairie.ademe.fr}}.
+
+\section{Coefficients de convection}
+
+\subsection*{Flux convectif}
+% [Figure : paroi chaude / paroi froide]
+Si on a une différence de température entre un fluide et la surface d'une paroi, il y a alors échange de chaleur (toujours dans le sens du chaud vers le froid).
+
+La circulation de l'air dépend :
+\begin{itemize}
+  \item des conditions de température ;
+  \item de l'inclinaison ;
+  \item de la rugosité.
+\end{itemize}
+
+La densité de flux convectif $\varphi_{\mathrm{convection}}$ est alors :
+\begin{equation}
+  \varphi_{\mathrm{convection}} = h\,\Delta T
+\end{equation}
+où $h$ est le coefficient convectif (W/m$^2$.K).
+
+\subsection*{Résistance thermique superficielle}
+Dans le bâtiment, on utilise deux coefficients de transmission thermique par convection :
+\begin{itemize}
+  \item $h_i$ : coefficient de transmission thermique par convection entre la température de l'air intérieur du local $T_i$ et la température de la face interne de la paroi $T_{si}$ ;
+  \item $h_e$ : coefficient de transmission thermique par convection entre la température de l'air extérieur $T_e$ et la température de la face externe de la paroi $T_{se}$.
+\end{itemize}
+On définit ainsi les résistances thermiques d'échanges superficiels intérieur et extérieur :
+\begin{equation}
+  R_{si} = \frac{1}{h_i} \qquad\qquad R_{se} = \frac{1}{h_e}
+\end{equation}
+Ces grandeurs représentent les résistances thermiques des fines lames d'air en convection à la surface des enveloppes.
+
+\subsection*{Valeurs pour les parois}
+Les valeurs des coefficients de convection sont données dans les normes (NF EN ISO 6946:2007, utilisée dans la RT 2012 et la RE 2020).
+
+\begin{table}[htbp]
+\centering
+\caption{Résistances superficielles conventionnelles (ISO 6946:2007)}
+\label{tab:rsi-rse}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Résistance superficielle (m$^2$.K/W)} & \multicolumn{3}{c|}{\textbf{Sens du flux de chaleur}} \\
+\cline{2-4}
+ & Ascendant & Horizontal & Descendant \\
+\hline
+$R_{si}$ & 0,10 & 0,13 & 0,17 \\
+$R_{se}$ & 0,04 & 0,04 & 0,04 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textit{Note 1 :} les valeurs données sont des valeurs de calcul. Pour la déclaration du coefficient de transmission thermique de composants, ou dans d'autres cas pour lesquels des valeurs indépendantes du sens du flux de chaleur sont requises, ou si le sens du flux de chaleur est susceptible de changer, il est conseillé d'utiliser les valeurs correspondant au flux horizontal.
+
+\textit{Note 2 :} la résistance superficielle s'applique aux surfaces en contact avec l'air. Aucune résistance superficielle ne s'applique à des surfaces en contact avec d'autres matériaux.
+
+\subsection*{Valeurs pour les lames d'air}
+
+\begin{table}[htbp]
+\centering
+\caption{Résistance thermique des lames d'air non ventilées avec surfaces à forte émissivité (ISO 6946:2007)}
+\label{tab:lames-air}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Épaisseur de la lame d'air (mm)} & \multicolumn{3}{c|}{\textbf{Résistance thermique (m$^2$.K/W) -- sens du flux}} \\
+\cline{2-4}
+ & Ascendant & Horizontal & Descendant \\
+\hline
+0 & 0,00 & 0,00 & 0,00 \\
+5 & 0,11 & 0,11 & 0,11 \\
+7 & 0,13 & 0,13 & 0,13 \\
+10 & 0,15 & 0,15 & 0,15 \\
+15 & 0,16 & 0,17 & 0,17 \\
+25 & 0,16 & 0,18 & 0,19 \\
+50 & 0,16 & 0,18 & 0,21 \\
+100 & 0,16 & 0,18 & 0,22 \\
+300 & 0,16 & 0,18 & 0,23 \\
+\hline
+\end{tabular}
+\end{table}
+Les valeurs intermédiaires peuvent être obtenues par interpolation linéaire.
+
+% TODO : les DTU
 
 \section{Convection dans le bâtiment}
 
-\chapter{Rayonnement}
+\subsection*{Stratification de l'air}
+La stratification de l'air est la formation de couches (strates) d'air de températures distinctes.
+
+La plupart des fluides ont une masse volumique qui diminue avec la température : si un fluide a une température inhomogène, en présence de la gravité, la partie chaude du fluide monte au-dessus de la partie froide.
+
+\textbf{L'air chaud monte et l'air froid descend.}
+
+On observe une variation de température moyenne de 0,5\,°C par mètre\footnote{M.N.A. Said, \emph{Measurement of thermal stratification in large single-cell buildings}, 1995.}.
+
+\subsection*{Fenêtres et parois froides}
+L'air froid descend au contact des parois froides. Dans le bâtiment, il s'agit souvent des fenêtres.
+
+Pour réduire les pertes de chaleur par les fenêtres, le double vitrage est majoritairement utilisé depuis la fin des années 1970, mais il a été théorisé dès 1822\footnote{Joseph Fourier, \emph{Théorie analytique de la chaleur}, 1822.}.
+
+Au contact d'une fenêtre, l'air se refroidit et provoque de la convection naturelle.
+% [Figures : simple et double vitrage ; paroi froide]
+
+\subsection*{Chauffage par convection naturelle}
+Les radiateurs reposent sur la convection naturelle.
+
+Ils sont historiquement placés sous la fenêtre :
+\begin{itemize}
+  \item gain de place ;
+  \item « rideau d'air chaud » qui vient compenser l'effet de paroi froide de la vitre, et s'oppose au flux d'air descendant ;
+  \item évite la condensation autour de la menuiserie.
+\end{itemize}
+Ils peuvent être placés « n'importe où » sur des constructions récentes.
+% [Figure : radiateur électrique]
+
+\subsection*{Convection forcée}
+Les brasseurs d'air ou les VMC (ventilation mécanique contrôlée) reposent sur la convection forcée.
+% [Figures : brasseur d'air ; VMC]
+
+\subsection*{Infiltration et étanchéité à l'air}
+Le vent crée une convection forcée à travers les défauts du bâtiment :
+\begin{itemize}
+  \item fissures ;
+  \item prises électriques ;
+  \item jonctions des menuiseries ;
+  \item toitures.
+\end{itemize}
+Les pertes énergétiques par infiltration et une mauvaise étanchéité peuvent représenter 30\,\% des déperditions totales d'un bâtiment\footnote{ADEME : \texttt{https://agirpourlatransition.ademe.fr}}.
+
+Cependant, on ne cherchera pas à construire une boîte étanche (cf. chapitre sur les transferts de vapeur).
+
+% =====================================================================
+\chapter{Le rayonnement}
 \label{chap:rayonnement}
 
-\section{Mécanisme du rayonnement}
+\textbf{Le rayonnement} : la chaleur se transmet par onde électromagnétique.
+Il concerne tout état de la matière.
+\emph{Le rayonnement est le seul transfert de chaleur qui fonctionne dans le vide.}
 
-\subsection{Le Soleil}
+\section{Le soleil}
 
-\subsection{Les ondes électromagnétiques}
+\begin{itemize}
+  \item Le soleil est un réacteur à fusion nucléaire depuis 5 milliards d'années.
+  \item Par un processus de transformation d'hydrogène en hélium, il émet d'énormes quantités d'énergie dans l'espace.
+  \item Ces radiations s'échappent dans toutes les directions et voyagent à travers l'espace à la vitesse constante de 300\,000\,km/s, que l'on appelle vitesse de la lumière.
+  \item Après avoir parcouru 150 millions de km, l'irradiation solaire arrive à l'extérieur de l'atmosphère de la Terre avec une puissance de 1\,360\,W/m$^2$ : on l'appelle la constante solaire.
+\end{itemize}
 
-\section{Apports solaires}
+\subsection*{Le système solaire}
+\begin{itemize}
+  \item Rayon du Soleil : 696\,342\,km.
+  \item Rayon de la Terre : 6\,378\,km.
+  \item Distance Terre -- Soleil : 149\,597\,870\,km.
+  \item La rotation de la Terre autour du Soleil est appelée révolution.
+\end{itemize}
+% [Figures : distance et tailles Terre / Soleil à l'échelle]
+La distance Terre -- Soleil est telle que le rayonnement solaire est considéré comme des rayons parallèles.
 
-\section{Rayonnement dans le bâtiment}
+\subsection*{Le cycle jour -- nuit}
+La rotation de la Terre sur elle-même autour de l'axe des pôles géographiques (reliant le pôle Nord et le pôle Sud) entraîne un cycle jour -- nuit.
+\textbf{L'apport solaire dépend de l'heure.}
 
-\chapter{Conclusion sur les transferts de chaleur}
+\subsection*{Les saisons}
+L'axe de rotation est incliné sur l'écliptique en moyenne de 23° ; cette inclinaison est la cause des saisons.
+\textbf{L'apport solaire dépend de la période de l'année.}
+% [Figures : solstices et équinoxes]
+
+\section{Le rayonnement électromagnétique}
+
+\subsection*{Principe}
+Le rayonnement est un mode d'échange d'énergie par émission et absorption de radiations électromagnétiques.
+L'échange thermique par rayonnement se fait suivant le processus :
+\begin{itemize}
+  \item \textbf{Émission} : il y a conversion de l'énergie fournie à la source en énergie électromagnétique.
+  \item \textbf{Transmission} : la transmission de cette énergie électromagnétique se fait par propagation des ondes, avec éventuellement absorption par le milieu traversé.
+  \item \textbf{Réception} : à la réception, il y a conversion du rayonnement électromagnétique incident en énergie thermique (absorption).
+\end{itemize}
+
+\subsection*{Les ondes électromagnétiques}
+L'onde électromagnétique est un modèle utilisé pour représenter les rayonnements électromagnétiques.
+L'onde est la représentation du phénomène qu'est le rayonnement.
+
+En 1865, Maxwell\footnote{J.C. Maxwell, \emph{A Dynamical Theory of the Electromagnetic Field}, 1865.} formalise le lien entre les champs électriques et magnétiques.
+
+\textbf{Toutes les particules chargées et accélérées émettent des ondes électromagnétiques.}
+
+\subsection*{La lumière}
+La lumière est une onde électromagnétique.
+Le spectre électromagnétique comprend, des longueurs d'onde les plus courtes aux plus longues : les rayons gamma, les rayons X, les ultraviolets, le visible, les infrarouges, les micro-ondes et les ondes radio.
+% [Figure : spectre électromagnétique]
+% [Pour aller plus loin : vidéos ScienceClic, A. Aspect, E. Klein, Le Vortex (Arte), A. Barrau]
+
+\subsection*{Loi de Stefan -- Boltzmann}
+Toutes les particules chargées et accélérées émettent des ondes électromagnétiques.
+Tous les corps à température supérieure à 0\,K rayonnent : \textbf{tous les objets rayonnent}.
+
+Les corps rayonnent en fonction de leur température\footnote{J. Stefan \& L. Boltzmann, \emph{Über die Beziehung zwischen der Wärmestrahlung und der Temperatur}, 1879.} :
+\begin{equation}
+  P = \sigma T^4
+\end{equation}
+avec $P$ la puissance surfacique (W/m$^2$), $\sigma$ la constante de Stefan -- Boltzmann (W/m$^2$.K$^4$) et $T$ la température (K).
+
+\section{Les apports solaires}
+
+Le soleil rayonne, mais seulement une partie de ce rayonnement arrive à la surface de la Terre\footnote{Énergie Plus : \texttt{https://energieplus-lesite.be/theories/climat8/ensoleillement-d8/}} :
+\begin{enumerate}
+  \item puissance émise par le soleil : \textbf{63\,500\,kW/m$^2$} ;
+  \item constante solaire : \textbf{1\,370\,W/m$^2$} ;
+  \item rayonnement réfléchi ;
+  \item rayonnement absorbé et diffusé ;
+  \item rayonnement solaire à la surface de la Terre (\textbf{max : 1\,000\,W/m$^2$}).
+\end{enumerate}
+% [Figure : spectre solaire hors atmosphère et au niveau de la mer]
+
+Au milieu du jour, le Soleil est au-dessus de nos têtes, et ses rayons ont une faible épaisseur d'atmosphère à traverser.
+Au début et à la fin de la journée, le Soleil est bas sur l'horizon ; la traversée de l'atmosphère est longue.
+
+Au coucher du Soleil, les rayons sont suffisamment affaiblis pour permettre à l'œil humain de fixer le soleil sans trop d'éblouissement.
+
+En altitude, la couche d'atmosphère à traverser est plus réduite : dans les sites de montagne, l'intensité du rayonnement augmente sensiblement.
+
+\textbf{Le rayonnement solaire reçu sur une surface varie donc au cours du temps en fonction de la position du soleil et de la couverture nuageuse.}
+
+La puissance solaire maximale à la surface de la Terre est d'environ 1\,000\,W/m$^2$ pour une surface perpendiculaire aux rayons (environ 500\,W/m$^2$ par ciel partiellement couvert, 250\,W/m$^2$ par ciel couvert).
+% [Figures : cartes d'irradiation Solargis, monde et Europe]
+
+\subsection*{Repérage du soleil}
+\begin{itemize}
+  \item \textbf{La hauteur} du Soleil est l'angle que fait la direction du Soleil avec le plan horizontal. Elle se compte de 0° à 90° à partir de l'horizon vers la voûte céleste.
+  \item \textbf{L'azimut} du Soleil est l'angle formé entre le plan vertical passant à la fois par le Soleil et par le lieu considéré, et le plan vertical Nord -- Sud.
+\end{itemize}
+% [Figures : diagramme solaire SunEarthTools pour Rennes ; courses solaires à Uccle]
+
+\subsection*{Irradiation incidente}
+\begin{itemize}
+  \item L'angle que font les rayons du Soleil avec une surface détermine la densité énergétique que reçoit cette surface.
+  \item Puisque le rayonnement solaire arrive sur la Terre sous forme d'un faisceau parallèle, une surface perpendiculaire à ces rayons intercepte la densité maximale d'énergie.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Pourcentage du rayonnement intercepté par une paroi en fonction de l'angle d'incidence}
+\label{tab:incidence}
+\small
+\begin{tabular}{|c|c||c|c|}
+\hline
+\textbf{Angle (°)} & \textbf{Intercepté (\%)} & \textbf{Angle (°)} & \textbf{Intercepté (\%)} \\
+\hline
+0 & 100,0 & 50 & 64,3 \\
+5 & 99,6 & 55 & 57,4 \\
+10 & 98,5 & 60 & 50,0 \\
+15 & 96,5 & 65 & 42,3 \\
+20 & 94,0 & 70 & 34,2 \\
+25 & 90,6 & 75 & 25,8 \\
+30 & 86,6 & 80 & 17,4 \\
+35 & 81,9 & 85 & 8,7 \\
+40 & 76,6 & 90 & 0,0 \\
+45 & 70,7 & & \\
+\hline
+\end{tabular}
+\end{table}
+
+Le rayonnement total reçu sur une surface est défini par la somme de trois composantes :
+\begin{itemize}
+  \item \textbf{l'irradiation directe}, provenant directement du Soleil ;
+  \item \textbf{l'irradiation diffuse}, correspondant au rayonnement reçu de la voûte céleste, hors rayonnement direct ;
+  \item \textbf{l'irradiation réfléchie}, correspondant au rayonnement réfléchi par l'environnement extérieur, en particulier le sol, dont le coefficient de réflexion est appelé « albédo ».
+\end{itemize}
+
+\section{Le rayonnement dans le bâtiment}
+
+\subsection*{Calcul du rayonnement}
+D'après la loi de Stefan -- Boltzmann, la densité de flux rayonnée est :
+\begin{equation}
+  \varphi_{\mathrm{rayonnement}} = \varepsilon\,\sigma\left(T_S^4 - T_a^4\right)
+\end{equation}
+\begin{itemize}
+  \item $\sigma$ est la constante de Stefan -- Boltzmann, $5{,}67\times10^{-8}$\,W/m$^2$.K$^4$ ;
+  \item $\varepsilon$ est l'émissivité du matériau (ou facteur d'émission), dont la valeur dépend du matériau ;
+  \item $T_S$ est la température de surface et $T_a$ la température ambiante (K).
+\end{itemize}
+
+\subsection*{Exemple de bilan sur une paroi}
+\begin{equation}
+  \mathrm{Flux\ entrants} = \mathrm{Flux\ sortants}
+\end{equation}
+Rayonnement du soleil + rayonnement du ciel = rayonnement de la surface + convection + conduction :
+\begin{equation}
+  \alpha\,G + \varepsilon\sigma\left(T_{\mathrm{ciel}}^4 - T_{\mathrm{surface}}^4\right)
+  = \varepsilon\sigma\left(T_{\mathrm{surface}}^4 - T_{\mathrm{ext}}^4\right)
+  + h_e\left(T_{\mathrm{surface}} - T_{\mathrm{ext}}\right)
+  + \frac{T_{\mathrm{surface}} - T_{si}}{R_{\mathrm{paroi}}}
+\end{equation}
+avec :
+\begin{itemize}
+  \item $\alpha$ : absorptivité de la surface ;
+  \item $G$ : irradiance solaire incidente sur la paroi (W/m$^2$) ;
+  \item $\varepsilon$ : émissivité thermique de la surface dans l'infrarouge ;
+  \item $\sigma$ : constante de Stefan -- Boltzmann (W/m$^2$.K$^4$) ;
+  \item $T_{\mathrm{ciel}}$ : température radiative équivalente du ciel (K) ;
+  \item $T_{\mathrm{surface}}$ : température de surface extérieure de la paroi (K) ;
+  \item $T_{\mathrm{ext}}$ : température de l'air extérieur (K) ;
+  \item $h_e$ : coefficient d'échange convectif extérieur (W/m$^2$.K) ;
+  \item $T_{si}$ : température de surface intérieure (K) ;
+  \item $R_{\mathrm{paroi}}$ : résistance thermique surfacique de la paroi (m$^2$.K/W).
+\end{itemize}
+
+\subsection*{Le vitrage}
+Le facteur solaire d'un vitrage (FS) permet de caractériser les performances solaires d'une fenêtre et sa capacité à contrôler le passage du rayonnement solaire au travers du vitrage.
+\begin{itemize}
+  \item Quand un rayonnement solaire frappe un vitrage, une partie de celui-ci est réfléchie, une partie est transmise directement au travers du vitrage et une partie est absorbée par le vitrage.
+  \item La partie absorbée par le vitrage est ensuite partagée en une partie réémise par le vitrage vers l'intérieur et une partie réémise vers l'extérieur.
+\end{itemize}
+Le facteur solaire du vitrage est défini par la fraction du rayonnement solaire qui entre à l'intérieur du bâtiment au travers de la fenêtre, rapportée au rayonnement incident :
+\begin{equation}
+  FS\,(\%) = \frac{\mathrm{Flux\ transmis}}{\mathrm{Flux\ incident}}
+\end{equation}
+% [Figure : vitrage clair / absorbant / réfléchissant]
+
+\subsection*{Les protections solaires}
+% [Figures : casquettes, végétation caduque, coupe Atelier Architecture verte (zénith 21 décembre / 21 juin)]
+
+\subsection*{Conception}
+% [Figures : course solaire dans un logiciel de modélisation ; carte d'irradiation cumulée]
+
+\subsection*{Effets indésirables}
+Exemple : The Walkie-Talkie (Londres), Rafael Viñoly, Adamson Associates Architects, 2014.
+% [Figure : Walkie-Talkie]
+
+\subsection*{Caméra thermique}
+% [Figure : caméra thermique]

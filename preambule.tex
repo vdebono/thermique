@@ -12,6 +12,11 @@
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 
+\usepackage[french]{babel}
+\usepackage{csquotes}           % guillemets corrects, recommandé avec biblatex
+\usepackage[backend=biber, style=authoryear]{biblatex}
+\addbibresource{ref.bib}
+
 % Chapitres numérotés dans leur partie : II.1, II.2… (la numérotation repart à 1
 % à chaque partie). Supprimez cette ligne pour une numérotation continue 1, 2, 3…
 \counterwithin{chapter}{part}
@@ -29,3 +34,4 @@
 
 % Vos macros
 \newcommand{\unite}[1]{\,\mathrm{#1}}
+\input{mise-en-page-pdf}

@@ -1,0 +1,249 @@
+\part{Introduction générale}
+\chapter{Introduction et objectifs}
+\label{chap:introduction}
+
+\section{Présentation du cours}
+Ce document est le support de cours de l'enseignement A321 Ambiances, dispensé à l'ENSAP Lille. Il ne se substitue pas au cours : il en est plutôt un résumé synthétique. En effet, sans explications orales, ce cours peut paraître \textit{trop technique} pour une licence d'architecture, de par les nombreuses équations et unités utilisées. J'insiste sur le fait que le cours est tout à fait accessible : il est possible de le comprendre sans avoir de bagage mathématique. Les équations sont toujours expliquées en cours. De plus, les concepts présentés dans ce cours sont faits pour être compris puis manipulés par les architectes, sans en faire de futurs physiciens. Ainsi, des conclusions sont présentées en fin de chaque chapitre et récapitulent les informations essentielles qui seront à mobiliser en projet. Pour conclure : la lecture de ce cours peut paraître austère, elle représente uniquement la partie synthétique d'un cours magistral qui lui est beaucoup plus vivant et pédagogique.
+
+\textbf{Ce document est en cours d'élaboration et fait suite à la lutte de 2026 dans les ENSA, il n'est pas encore finalisé (il manque notamment de nombreuses figures): il peut donc contenir des erreurs. Si vous repérez des erreurs merci de me les faire remonter.}
+
+Dernières mise à jour : \today.
+\\
+
+Ce cours est composé de 7 Parties principales :
+\begin{itemize}
+  \item \textbf{Partie 1 : Introduction générale.} Cette partie présente le cours et ses objectifs, puis pose les notions de base : énergie, température, chaleur et propriétés thermiques des matériaux.
+
+  \item \textbf{Partie 2 : Transferts de chaleur.} Cette partie est consacrée au passage de la chaleur à travers ses trois modes : la conduction, la convection et le rayonnement. Pour chaque mode, son fonctionnement est présenté ainsi que sa traduction dans le bâtiment
+
+  \item \textbf{Partie 3 : Transferts de vapeur.} Cette partie s'intéresse à l'humidité de l'air : pression de vapeur, diagramme de l'air humide, migration de la vapeur d'eau à travers les parois et risques de condensation.
+
+  \item \textbf{Partie 4 : Climat.} Cette partie élargit pour dézoomer  à l'échelle du globe : effet de serre, entrée dans l'Anthropocène et dérèglement climatique, pour comprendre le contexte dans lequel s'inscrit aujourd'hui la conception architecturale.
+
+  \item \textbf{Partie 5 : Thermique architecturale.} Cette partie revient au projet. Elle aborde le comportement du bâtiment en régime dynamique, le rôle de l'enveloppe, la notion de confort (d'hiver et d'été), ainsi que les équipements courant des bâtiments : ventilation, chauffage et climatisation.
+
+  \item \textbf{Partie 6 : Cadre réglementaire.} Cette partie retrace l'évolution de la réglementation thermique française, actuellement en vigueur, la RE 2020, à travers ces trois volets : carbone, énergie et confort d'été.
+
+  \item \textbf{Partie 7 : Conclusion générale.} Cette dernière partie fait la synthèse du cours. Elle propose des pistes d'intervention en projet neuf comme en réhabilitation, et des ressources pour aller plus loin.
+\end{itemize}
+
+\section{Objectifs pédagogiques}
+L'ensemble des parties d'un bâtiment est soumis aux transferts thermiques, 
+qui sont des échanges de chaleur entre un milieu chaud et un milieu froid : La connaissance et la maîtrise de ces transferts thermiques permet d’influer sur le confort des usagers et de gérer la facture énergétique d'un bâtiment.
+
+Les objectifs de ce cours sont de :
+\begin{itemize}
+    \item Comprendre les phénomènes physique qui sont à l’œuvre dans les transferts de chaleurs et de vapeurs.
+    \item Être capable de comprendre le rôle des différents matériaux au sein de l'enveloppe du bâtiment
+    \item Établir des stratégies de conception et/ou de réhabilitation pour assurer le confort des usagers (en hiver et en été)
+    \item Connaître les réglementations en vigueurs dans le secteur de l'architecture sur la thermique, l’énergie et l'environnement.
+
+\end{itemize}
+
+\chapter{Historique, concepts et unités}
+\label{chap:concepts}
+
+% ---------------------------------------------------------------------
+\section{Énergie}
+
+\subsection*{Énergie, usage courant}
+L'énergie est un concept dont il peut être complexe de donner une définition, On parle d'énergie dans de nombreux domaines (physique, philosophie, ésotérisme, etc.) avec des définitions variables, et parfois même divergentes.
+
+\subsection*{Énergie, en physique (thermodynamique)}
+\textbf{L'énergie désigne la capacité à effectuer des transformations}, c'est-à-dire à modifier l'état d'un système\footfullcite{klein-energie}.
+
+\textbf{L'énergie est ce qui quantifie le changement d'état d'un système}\footfullcite{jancovici2019}. Par exemple :
+\begin{itemize}
+  \item une modification de température (un radiateur qui chauffe) ;
+  \item une modification de vitesse (un bus qui se déplace) ;
+  \item une modification de forme (une pelleteuse qui creuse).
+\end{itemize}
+% [Figure : radiateur / bus / pelleteuse]
+
+L'énergie est le travail d'une force et se mesure en joules (J).
+1 joule est défini comme le travail d'une force d'un newton qui se déplace d'un mètre dans la direction de la force :
+\begin{equation}
+  1\,\mathrm{J} = 1\,\mathrm{N}\times\mathrm{m} = 1\,\mathrm{kg\cdot m^2/s^2} = 1\,\mathrm{kg\cdot m^{2}\cdot s^{-2}}
+\end{equation}
+
+
+D'autres unités ont pu être utilisées par le passé, par exemple la calorie (cal).
+1 calorie est définie comme l'énergie nécessaire pour élever la température d'un gramme d'eau liquide de 1\,°C :
+\begin{equation}
+  1\,\mathrm{cal} \simeq 4{,}2\,\mathrm{J}
+\end{equation}
+
+
+\subsection*{Énergie, en physique (thermodynamique) appliquée au bâtiment}
+On utilisera davantage le watt-seconde (W.s) ou le kilowatt-heure (kWh) qui sont des dérivés du joule.
+
+Le watt est une unité de puissance : c'est-à-dire le transfert d'énergie au cours du temps.
+Le watt (W) représente la puissance d'un système dans lequel une énergie d'un joule est transférée uniformément pendant une seconde :
+\begin{equation}
+  1\,\mathrm{W} = 1\,\mathrm{J/s} = 1\,\mathrm{kg\cdot m^2/s^3} = 1\,\mathrm{kg\cdot m^{2}\cdot s^{-3}}
+\end{equation}
+
+La quantité de chaleur $Q$ (J) dépend du temps $t$ (s) et de la puissance thermique $P$ (W) :
+\begin{equation}
+  P = \frac{Q}{t}
+\end{equation}
+
+On peut donc définir le watt-heure (Wh) tel que : $1\,\mathrm{Wh} = 3600\,\mathrm{J}$ ou encore $1\,\mathrm{kWh} = 3600\,\mathrm{kJ}$.
+
+\subsection*{Conservation de l'énergie}
+L'énergie désigne la capacité à effectuer des transformations.
+La quantité d'énergie d'un système fermé reste fixe tant qu'il n'y a pas de transformation : \textbf{l'énergie est une grandeur qui se conserve}\footfullcite{planck1887}.
+
+\begin{itemize}
+  \item On ne produit pas de l'énergie : on transforme la forme qu'elle prend ou on la transfère.
+  \item On ne consomme pas de l'énergie : on transforme la forme qu'elle prend ou on la transfère.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{Température}
+
+\subsection*{La température et la chaleur sont deux notions différentes}
+\textbf{La température est la conséquence de l'excitation des particules composant la matière.}
+\begin{itemize}
+  \item Plus ces particules sont excitées, plus la matière est chaude.
+  \item Cette excitation peut évoluer dans le temps, on observe alors une variation de température de la matière.
+  \item Le corps humain a la capacité de sentir des variations infimes de température.
+  \item En physique, on considère la température comme une variable dite « d'état » car elle caractérise un état de la matière et non une évolution.
+\end{itemize}
+
+\subsection*{L'humain et la perception de la température}
+l'etre humain possède des themorecepteurs capable de ressentir des petites variations de températures. Ces thermorécepteurs sont des terminaisons nerveuses mesurant la température cutanée \footfullcite{livrescolaire-thermorecepteurs}.
+Il existe deux types de thermorécepteurs :
+\begin{itemize}
+  \item les thermorécepteurs au « chaud » (entre 30 et 44\,°C) ;
+  \item les thermorécepteurs au « froid » (entre 17 et 30\,°C).
+\end{itemize}
+La sensation thermique devient douloureuse si la température cutanée est inférieure à 17\,°C ou supérieure à 44\,°C : les neurones nociceptifs prennent le relais.
+% [Figure : coupe de la peau]
+
+\subsection*{Mesure de la température}
+Historiquement plusieurs unités et echelles ont été proposé pour mesurer la température,
+
+\subsubsection*{Le degré Celsius (°C)}
+Le degré Celsius est une echelle de température proposée par Anders Celsius en 1742\footfullcite{beckman1997}. Son échelle est initialement définie par deux points :
+  \begin{itemize}
+    \item le point bas 0\,°C correspond à la température de solidification de l'eau (au niveau de la mer : à pression « standard ») ;
+    \item le point haut 100\,°C correspond à la température d'ébullition de l'eau (au niveau de la mer : à pression « standard ») ;
+    \item l'intervalle est divisé en 100.
+  \end{itemize}
+
+L'échelle Celsius est couramment utilisée dans le monde, et a été redéfinie pour s'aligner sur le \textbf{Système international d'unités}.
+  
+
+\subsubsection*{Le kelvin (K)}
+Le Kelvin est proposé par William Thomson, (connu sous le nom de Lord Kelvin), en 1848\footfullcite{thomson1848} le Kelvin \textbf{Utilise la notion de zéro absolu} :
+  \begin{itemize}
+    \item le 0\,K correspond à la température la plus basse qui puisse exister (lorsque les particules ne sont pas excités du tout) ;
+    \item l'intervalle est le même que celui de l'échelle des °C.
+  \end{itemize}
+Le kelvin est l'unité officielle du Système international d'unités, on l'utilise couramment en physique. C'est une grandeur qui sera donc toujours positive.
+
+
+\subsubsection*{Conversion degré Celsius en kelvin}
+\[
+  0\,\mathrm{K} = -273{,}15\,^{\circ}\mathrm{C}
+\]
+L'intervalle est le même que celui de l'échelle des °C, ainsi :
+\begin{equation}
+  T(\mathrm{K}) = T(^{\circ}\mathrm{C}) + 273{,}15
+\end{equation}
+Pour convertir des degrés Celsius en kelvins, il suffit donc d'ajouter 273,15 à la température considérée.
+Par exemple, 37\,°C = 310,15\,K.
+
+% ---------------------------------------------------------------------
+\section{Chaleur}
+
+\textbf{La chaleur est une énergie} (elle s'exprime donc en J ou en kWh).
+La chaleur est la quantité d'énergie qu'il faut apporter (ou ôter) afin de modifier la température de la matière.
+
+Rappel : 1 calorie est définie comme l'énergie nécessaire pour élever la température d'un gramme d'eau liquide de 1\,°C ($1\,\mathrm{cal} \simeq 4{,}2\,\mathrm{J}$).
+
+\textbf{La chaleur est l'énergie échangée lors d'un transfert thermique.}
+% [Figure : l'exemple du welsh]
+
+On distingue deux types de chaleurs : la chaleur sensible et la chaleur latente.
+
+\subsection*{La chaleur sensible}
+La chaleur sensible est la chaleur qui provoque une modification de la température d'un objet sans modifier son état.
+Par exemple :
+\begin{itemize}
+  \item si on chauffe de l'eau de 25,°C à 70\,°C, la température monte au fur et à mesure que de la chaleur y est ajoutée sans que l'état de l'eau change : la hausse de chaleur est appelée chaleur sensible ;
+  \item de la même manière, quand de la chaleur est enlevée d'un objet et que sa température baisse, la chaleur retirée est également appelée chaleur sensible.
+\end{itemize}
+\textbf{La chaleur sensible modifie la température d'une matière.}
+
+\subsection*{La chaleur latente}
+La chaleur latente est la chaleur qui provoque une modification d'état de la matière.
+\begin{itemize}
+  \item Tous les corps purs sont capables de modifier leur état.
+  \item Les solides peuvent se liquéfier et les liquides peuvent devenir des gaz.
+  \item Ces transformations nécessitent l'ajout ou le retrait de chaleur.
+  \item La chaleur latente n'affecte pas la température d'une substance (l'eau reste à 100\,°C quand elle bout).
+  \item La chaleur ajoutée pour maintenir l'eau en ébullition est la chaleur latente.
+\end{itemize}
+\textbf{La chaleur latente modifie l'état physique d'une matière.}
+
+
+Une substance peut changer d'état physique de plusieurs façons, il existe donc plusieurs chaleurs latentes :
+\begin{itemize}
+  \item chaleur latente de fusion : quantité de chaleur pour passer de l'état solide à l'état liquide ;
+  \item chaleur latente de vaporisation : quantité de chaleur pour passer de l'état liquide à l'état gazeux ;
+  \item chaleur latente de liquéfaction (ou de condensation) : quantité de chaleur pour passer de l'état gazeux à l'état liquide ;
+  \item chaleur latente de solidification : quantité de chaleur pour passer de l'état liquide à l'état solide.
+\end{itemize}
+% [Figure : courbe récapitulative chaleur sensible / chaleur latente]
+
+% ---------------------------------------------------------------------
+\section{Propriétés des matériaux}
+
+\subsection*{Masse volumique}
+C'est le rapport entre la masse (kg) d'un matériau et un volume donné (m$^3$). Son expression est donc :
+\begin{equation}
+  \rho = \frac{m}{V} \quad \mathrm{(kg/m^3)}
+\end{equation}
+On parlera également de densité $d$, qui est le rapport de la masse volumique d'un matériau à celle d'une référence, en général l'eau ($\rho = 1000$\,kg/m$^3$).
+
+\subsection*{Conductivité thermique}
+La conductivité thermique, notée $\lambda$, est la quantité d'énergie traversant 1\,m$^2$ de matériau d'un mètre d'épaisseur soumis à une différence de 1 degré de température. Elle s'exprime en $\mathrm{W\cdot m^{-1}\cdot K^{-1}}$ ou (W/m.K).
+
+La conductivité themrique, $\lambda$ traduit la capcité d'un matériau à laisser passer ou non la chaleur. C'est une caractéristique intrinsèque et propre à chaque matériaux.
+\begin{itemize}
+    \item Plus la conductivité est faible, moins la matériau laisse passer la chaleur : il est donc un isolant thermique.
+    \item Plus la conductivité est forte, plus le matériaux laisse passer la chaleur, c'est donc un conducteur thermique
+\end{itemize}
+  
+Quelques références\footnote{\texttt{https://fr.wikipedia.org/wiki/Conductivit\%C3\%A9\_thermique}} sont consultables sur le web.
+
+\subsection*{Capacité thermique}
+La capacité thermique (ou capacité calorifique), notée $c$, d'un matériau quantifie la possibilité d'absorber ou de restituer de l'énergie par échange thermique.
+
+\textbf{La capacité thermique est la chaleur qu'il faut transférer à un corps pour augmenter sa température d'un kelvin.} Elle s'exprime en J/K ($\mathrm{J\cdot K^{-1}}$).
+
+On parle de capacités calorifiques :
+\begin{itemize}
+  \item massique, pour 1\,kg de matériau : $\displaystyle C_m = \frac{c}{m}$ \quad (J/kg.K) ;
+  \item volumique, pour 1\,m$^3$ de matériau : $\displaystyle C_v = \frac{c}{V}$ \quad (J/m$^3$.K).
+\end{itemize}
+
+Quelques références\footnote{\texttt{https://fr.wikipedia.org/wiki/Capacit\%C3\%A9\_thermique\_massique}} sont consultables sur le web.
+
+\subsubsection{différence entre conductivité et capacité thermqiue,}
+Pour distinguer la différence entre conductivité et capacité, nous pouvons envisager l'analogie suivante: un réservoir d'eau alimenté par un tuyau.
+
+si on assimile la température au niveau d'eau dans le reservoir, l'énergie échangée peut être assimilée au volume d'eau transféré et la puissance thermique au débit d'eau.
+
+\begin{itemize}
+  \item \textbf{$\lambda$ représente la résistance du tuyau.}
+  Plus le tuyau est étroit, plus sa  conductivité est faible, le débit sera plus faible.
+
+  \item \textbf{$C$ correspond à la surface horizontale du réservoir.}
+  Plus le réservoir est large, plus il faut ajouter d'eau pour faire monter son niveau d'un centimètre.
+  De même, une grande capacité thermique demande davantage d'énergie pour augmenter la température d'un degré.
+\end{itemize}
+
+\textbf{La conductivité désigne l’opposition d’un matériau au passage de la chaleur, tandis que la capacité thermique représente la quantité d’énergie que ce matériau (et peut restituer) pour augmenter sa température.}
