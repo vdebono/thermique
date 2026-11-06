@@ -36,8 +36,8 @@ jobs:
       - name: Récupérer le projet Overleaf
         uses: actions/checkout@v4
 
-      - name: Installer Pandoc et la police Latin Modern
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq pandoc fonts-lmodern
+      - name: Installer Pandoc, la police Latin Modern et l'outil de conversion des PDF
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq pandoc fonts-lmodern poppler-utils
 
       - name: Construire la page web
         run: |
@@ -103,6 +103,28 @@ jobs:
 
 
           source = lire(os.path.basename(SOURCE))
+
+
+          # Figures en PDF : converties en SVG (vectoriel) pour le web, en gardant la largeur demandée.
+          def figure_web(m):
+              options, chemin = m.group(1) or "", m.group(2).strip()
+              trouve = None
+              for candidat in [chemin] + [chemin + e for e in (".pdf", ".PDF", ".png", ".jpg", ".jpeg", ".svg")]:
+                  if os.path.isfile(os.path.join(RACINE, candidat)):
+                      trouve = candidat
+                      break
+              if not trouve or not trouve.lower().endswith(".pdf"):
+                  return m.group(0)
+              svg = os.path.splitext(trouve)[0] + ".svg"
+              cible = os.path.join(SORTIE, svg)
+              if not os.path.exists(cible):
+                  os.makedirs(os.path.dirname(cible) or ".", exist_ok=True)
+                  subprocess.run(["pdftocairo", "-svg", "-f", "1", "-l", "1", os.path.join(RACINE, trouve), cible], check=True)
+                  print("Figure convertie : %s -> %s" % (trouve, svg))
+              return "\\includegraphics%s{%s}" % (options, svg)
+
+
+          source = re.sub(r"\\includegraphics\s*(\[[^\]]*\])?\s*\{([^}]+)\}", figure_web, source)
 
           # Toute équation numérotée (environnement equation) reçoit une étiquette,
           # même sans \label, pour que la numérotation web suive celle du PDF.
@@ -179,6 +201,27 @@ jobs:
               ["pandoc", "_construction/complet.tex", "-f", "latex", "-t", "json"],
               check=True, capture_output=True, text=True).stdout)
           API = doc["pandoc-api-version"]
+
+
+          def largeurs_web(x):
+              """width=0.7\\linewidth -> 70 % de la largeur du texte sur le site."""
+              if isinstance(x, dict):
+                  if x.get("t") == "Image":
+                      attributs = x["c"][0][2]
+                      for i, (cle, valeur) in enumerate(attributs):
+                          if cle in ("width", "height"):
+                              m = re.fullmatch(r"\s*([0-9.]*)\s*\\(?:linewidth|textwidth|columnwidth|hsize)\s*", valeur)
+                              if m:
+                                  facteur = float(m.group(1)) if m.group(1) else 1.0
+                                  attributs[i] = [cle, "%g%%" % min(100, round(facteur * 100, 1))]
+                  for v in x.values():
+                      largeurs_web(v)
+              elif isinstance(x, list):
+                  for v in x:
+                      largeurs_web(v)
+
+
+          largeurs_web(doc["blocks"])
 
 
           def pandoc_json(document, *options):
@@ -665,6 +708,93 @@ jobs:
             pandoc "$TEX" -f latex -t html5 -s --mathjax -V lang=fr \
               --include-in-header tete.html --include-before-body entete.html -o _site/index.html
           fi
+
+          # Figures que le navigateur ne sait pas lire (PDF, chemins sans extension)
+          cat > figures.py <<'FIN_FIGURES'
+          #!/usr/bin/env python3
+          """Rend affichables sur le web les figures que le navigateur ne sait pas lire.
+
+          - Figure en PDF (\\includegraphics{figures/8.pdf}) : convertie en SVG
+            (image vectorielle, nette à tous les zooms) avec pdftocairo.
+          - Figure sans extension (\\includegraphics{figures/8}) : on cherche le
+            fichier réel (.png, .jpg, .svg, .pdf…), comme le fait LaTeX.
+
+          Usage : python3 figures.py _site
+          """
+          import html
+          import os
+          import re
+          import subprocess
+          import sys
+
+          SITE = sys.argv[1]
+          EXTENSIONS = [".png", ".jpg", ".jpeg", ".svg", ".gif", ".pdf"]
+          deja_converties = {}
+
+
+          def fichier_source(chemin):
+              """Retrouve le fichier image dans le projet (avec ou sans extension)."""
+              chemin = chemin.lstrip("./")
+              if os.path.splitext(chemin)[1].lower() in EXTENSIONS and os.path.isfile(chemin):
+                  return chemin
+              for e in EXTENSIONS + [e.upper() for e in EXTENSIONS]:
+                  if os.path.isfile(chemin + e):
+                      return chemin + e
+              return None
+
+
+          def version_web(chemin):
+              """Chemin de l'image à afficher sur le site, après conversion si besoin."""
+              source = fichier_source(chemin)
+              if source is None:
+                  print("Figure introuvable : %s" % chemin)
+                  return chemin
+              if not source.lower().endswith(".pdf"):
+                  cible = os.path.join(SITE, source)
+                  if not os.path.exists(cible):
+                      os.makedirs(os.path.dirname(cible) or ".", exist_ok=True)
+                      with open(source, "rb") as a, open(cible, "wb") as b:
+                          b.write(a.read())
+                  return source
+              if source not in deja_converties:
+                  svg = os.path.splitext(source)[0] + ".svg"
+                  cible = os.path.join(SITE, svg)
+                  os.makedirs(os.path.dirname(cible) or ".", exist_ok=True)
+                  subprocess.run(["pdftocairo", "-svg", "-f", "1", "-l", "1", source, cible], check=True)
+                  print("Figure convertie : %s -> %s" % (source, svg))
+                  deja_converties[source] = svg
+              return deja_converties[source]
+
+
+          def corriger(m):
+              balise, attributs = m.group(1), m.group(2)
+              src = re.search(r'src="([^"]*)"', attributs)
+              if not src:
+                  return m.group(0)
+              chemin = html.unescape(src.group(1))
+              if re.match(r"^[a-z]+:", chemin):          # image distante (https://…)
+                  return m.group(0)
+              if balise == "img" and os.path.splitext(chemin)[1].lower() in EXTENSIONS[:-1]:
+                  return m.group(0)                      # déjà une image web
+              nouveau = version_web(chemin)
+              attributs = attributs.replace(src.group(0), 'src="%s"' % html.escape(nouveau))
+              if balise == "embed" and 'alt="' not in attributs:
+                  attributs = attributs.rstrip(" /") + ' alt=""'
+              return "<img%s />" % attributs.rstrip(" /")
+
+
+          for nom in os.listdir(SITE):
+              if not nom.endswith(".html"):
+                  continue
+              page = os.path.join(SITE, nom)
+              with open(page, encoding="utf-8") as f:
+                  contenu = f.read()
+              nouveau = re.sub(r"<(img|embed)(\s[^>]*?)\s*/?>", corriger, contenu)
+              if nouveau != contenu:
+                  with open(page, "w", encoding="utf-8") as f:
+                      f.write(nouveau)
+          FIN_FIGURES
+          python3 figures.py _site
 
           # ---------- Éléments partagés : seulement dans le projet d'accueil ----------
           if [ -f menu.txt ]; then
