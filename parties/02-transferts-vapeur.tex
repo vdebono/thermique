@@ -3,14 +3,14 @@
 % =====================================================================
 \part{Transferts de vapeur}
 
-En France métropolitaine, l’air extérieur comme l’air intérieur ne sont jamais secs à $100\,\%$ : ils contiennent toujours de la vapeur d’eau (en quantité variable). On parle donc d’air humide. Cette humidité peut provoquer des désordres matériels dans le bâtiment, mais aussi des problèmes de santé. Cette partie s’intéresse à expliquer la physique à l’œuvre dans les transferts de vapeur, afin de mettre en œuvre ces connaissances dans la conception des parois et des espaces architecturaux.
+En France métropolitaine, l’air extérieur comme l’air intérieur n’est jamais sec à $100\,\%$ : ils contiennent toujours de la vapeur d’eau (en quantité variable). On parle donc d’air humide. Cette humidité peut provoquer des désordres matériels dans le bâtiment (moisissure, détérioration des isolants, détérioration de la structure), mais aussi des problèmes de santé. Cette partie s’intéresse à expliquer la physique à l’œuvre dans les transferts de vapeur, afin de mettre en œuvre ces connaissances dans la conception des parois et des espaces architecturaux.
 \chapter{Transferts de vapeur}
 \label{chap:vapeur}
 
 \section{Introduction}
 
 \subsection*{La vapeur d'eau}
-L'eau peut etre à l'état solide, liquide ou gazeux, et ses 6 transitions d'états sont les suivantes :
+L'eau peut être à l'état solide, liquide ou gazeux, et ses 6 transitions d'états sont les suivantes :
 \begin{itemize}
   \item solide $\rightarrow$ liquide : fusion 
   \item liquide $\rightarrow$ solide : solidification
@@ -23,7 +23,15 @@ L'eau peut etre à l'état solide, liquide ou gazeux, et ses 6 transitions d'ét
 
 \subsection*{Le point triple de l'eau}
 Le point triple de l'eau fait référence au point du diagramme de phase température-pression où peuvent coexister les trois phases (solide, liquide, gazeux) de l'eau. Il se situe à 0,01\,°C et environ 6\,mbar. 
-% [Figure : diagramme de phase de l'eau]
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/eau.png}
+    \caption[Point triple de l'eau]{%
+        Point triple de l'eau, crédit : Martin Turbet\protect\footnotemark}
+    \label{fig:point-triple-eau}
+\end{figure}
+\footnotetext{%
+    \url{https://media4.obspm.fr/public/ressources_lu/pages_planetologie-habitabilite/habit_impression.html}}
 
 \subsection*{L'évaporation}
 L'eau s'évapore au contact de l'air sans être à 100\,°C. (en effet lorsque l'on passe la serpillère dans son appartement, le filme d'eau au sol finit par s'évaporer avec le temps).
@@ -35,7 +43,6 @@ Ce phénomène d’évaporation explique pourquoi la transpiration humaine const
 
 
 \subsection*{La condensation}
-
 
 \section{Pression de vapeur et humidité}
 
@@ -49,10 +56,12 @@ La pression de vapeur saturante, $p_{vs}$, est la pression à laquelle la phase 
   \item La pression de vapeur saturante dépend de la température.
 \end{itemize}
 
+La pression de vapeur saturante est donc la pression à laquelle l'air est saturé en vapeur : \textbf{autrement dit, l'air ne pourra plus contenir de vapeur d'eau supplémentaire et l'excès d'eau entreinera de la condensation}.
+
 \subsection*{Humidité relative}
 L'humidité relative de l'air, HR (ou degré hygrométrique) correspond au rapport de la pression partielle de vapeur d'eau contenue dans l'air sur la pression de vapeur saturante à la même température.
 
-L'humidité relative est analogue à une mesure du rapport entre le contenu en vapeur d'eau de l'air et sa capacité maximale à en contenir dans ces conditions de température.Ce rapport changera si on change la température.
+L'humidité relative est analogue à une mesure du rapport entre le contenu en vapeur d'eau de l'air et sa capacité maximale à en contenir dans ces conditions de température. (Ce rapport changera donc si on change la température)
 
 L'humidité relative s'exprime en pourcentage :
 \begin{equation}
@@ -76,7 +85,6 @@ Le diagramme de l'air humide permet de relier la température à la pression de 
 Pour lire ce diagramme, et par exemple chercher le point de rosé de l'air à 20\,°C et 50\,\% d'humidité relative. Tout d'abord on cherche la température sur l'axe des absisse, ici à 20\,°C, on remonte verticalement ju'sau'a croiser la courbe d'humidité relative dersiré, ici 50\,\%, ensuite on se deplace vers la gauche jusqu'a croiser la courbe de saturation HR = 100\,\%, ensuite on redescend pour trouver la température de rosé.
 
 Ici, l'air à 20\,°C et 50\,\%  condense autour de 9\,°C, voir Figure \ref{fig:airhumidelecture}
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{figures/AHlecture.jpg}
@@ -116,7 +124,7 @@ $S_d$ est le produit de l'épaisseur $e$ d'un matériau et du coefficient de ré
 Le $S_d$ d'une couche de matériau correspond à l'épaisseur en mètres de la couche d'air stationnaire qui exercerait la même résistance à la diffusion de vapeur que la couche de matériau.
 Exemple : lorsque le $S_d$ d'un matériau vaut 5, cela signifie que cette couche de matériau équivaut à 5 mètres d'air stationnaire.
 
-Le coefficient de résistance à la diffusion de vapeur de certains matériaux dépend de leur état : sec ou humide.
+Le coefficient de résistance à la diffusion de vapeur des matériaux dépend de leur état : sec ou humide.
 
 \subsection*{Frein-vapeur, pare-vapeur et pare-pluie}
 Le \textbf{frein-vapeur} est un film fin qui freine le passage de la vapeur d'eau (murs perspirants). Il aura un $S_d$ de 1 à 5\,m.
@@ -129,34 +137,34 @@ Remarque : le \textbf{pare-pluie} se posera sous toiture ou à l'extérieur du m
 Le $S_d$ d'un pare-pluie est de l'ordre de 0,18\,m.
 
 \subsection*{Condensation de surface}
-L'air intérieur peut arriver en contact avec une surface de température plus faible. Au contact, l'air se refroidit et la température qu'il atteint dans le voisinage de la surface peut se retrouver en dessous du point de rosée.
+L'air intérieur peut entrer en contact avec une surface de température plus faible. Au contact, l'air se refroidit et la température qu'il atteint dans le voisinage de la surface peut se retrouver en dessous du point de rosée (voir diagramme de l'air humide).
 Il apparaît alors de la condensation dite \textbf{de surface} (la pression de vapeur dans l'air atteint la pression de saturation).
 % [Figures : moisissures en angle]
 
 Pour empêcher la condensation de surface, il faut :
 \begin{itemize}
-  \item avoir une qualité suffisante de l'isolation de l'enveloppe, de façon à ce que la température de la face intérieure de celle-ci ne descende pas en dessous de 17,5\,°C ;
-  \item diminuer, par une ventilation complémentaire, l'humidité relative de l'air intérieur ;
-  \item chauffer la face intérieure des parois froides.
+  \item Avoir une qualité suffisante de l'isolation de l'enveloppe, de façon à ce que la température de la face intérieure de celle-ci ne descende pas en dessous de 17,5\,°C
+  \item Diminuer, par une ventilation complémentaire, l'humidité relative de l'air intérieur
+  \item Chauffer la face intérieure des parois froides.
 \end{itemize}
 Si ces mesures ne sont pas applicables ou sont insuffisantes, la seule façon de limiter les dégâts est de traiter la surface des parois pour empêcher la pénétration de l'eau de condensation par capillarité dans les parois, et de pouvoir recueillir et évacuer l'eau condensée.
 
-\subsection*{Condensation interne}
-La condensation interne se produit si, à un endroit d'un élément, la pression de vapeur réelle devient égale à la pression de saturation régnant à cet endroit.
-Ce phénomène résulte des différences de pression de vapeur et de température.
+\subsubsection*{Condensation interne}
+La condensation interne se produit si, à un endroit de la paroi, la pression de vapeur réelle devient égale à la pression de saturation régnant à cet endroit. Ce phénomène résulte des différences de pression de vapeur et de température.
 
-Il existe bien souvent une différence de pression de vapeur entre l'intérieur et l'extérieur (production de vapeur par les occupants, les plantes, la lessive, la cuisson, le nettoyage).
+Dans une pièce, il y'a souvent une différence de pression de vapeur entre l'intérieur et l'extérieur (production de vapeur par les occupants, les plantes, la lessive, la cuisson, le nettoyage).
 
-En hiver, la pression partielle de vapeur intérieure est, en général, supérieure à celle correspondant au climat extérieur, et on a alors un flux de vapeur qui se produit.
+\subsection*{Condensation d'hiver}
+En hiver, la pression partielle de vapeur intérieure est, en général, supérieure à celle correspondant au climat extérieur, et on a alors un flux de vapeur qui se produit (de l'intérieure vers l'extérieur dans ce cas).
 
 Fonctionnement :
 \begin{itemize}
-  \item En hiver, la pression de vapeur est souvent plus élevée à l'intérieur qu'à l'extérieur.
-  \item Ce différentiel de pression de vapeur engendre une migration de vapeur par diffusion vers l'extérieur.
+  \item Le différentiel de pression de vapeur engendre une migration de vapeur par diffusion vers l'extérieur.
   \item Au fur et à mesure qu'elle traverse les différents matériaux constituant l'enveloppe, la vapeur se rapproche de l'extérieur et se refroidit progressivement.
   \item Si la température du point de rosée est atteinte, la vapeur se condense : on parlera de condensation d'hiver.
   \item L'humidité peut dégrader les matériaux et avoir des conséquences sur la durabilité de la paroi et de ses performances, ainsi que sur le confort et la santé des habitants.
 \end{itemize}
+
 Contrairement à la condensation de surface, la condensation interne n'est pas visible directement.
 
 Pour empêcher la condensation interne :
@@ -166,8 +174,9 @@ Pour empêcher la condensation interne :
 \end{itemize}
 
 \subsection*{Condensation d'été}
+En été et au printemps, la température et l'humidité relative de l'air extérieur sont parfois plus élevées qu'à l'intérieur : la pression de vapeur peut donc être plus élevée à l'extérieur qu'à l'intérieur.
+  
 \begin{itemize}
-  \item En été et au printemps, la température et l'humidité relative de l'air extérieur sont parfois plus élevées qu'à l'intérieur : la pression de vapeur peut donc être plus élevée à l'extérieur qu'à l'intérieur.
   \item L'humidité présente dans les matériaux de la paroi a alors tendance à migrer vers l'intérieur.
   \item Si elle est bloquée par une éventuelle membrane, la vapeur qui migre vers l'intérieur ne peut alors plus s'évaporer.
   \item Au contraire, elle peut condenser en arrivant contre celle-ci (au final, c'est le potentiel de séchage du mur qui est affaibli, et l'humidité risque alors de s'accumuler).
@@ -178,39 +187,39 @@ Pour éviter ce problème, on place des membranes dites « intelligentes », aus
 
 \section{Évolution de la pression de vapeur dans une paroi}
 
+Cette partie est détaille le calcul de la pression de vapeur au sein de parois. Cette partie calculatoire n'a pas besoin d'être maîtrisée pour une compréhension du cours, elle est présentée ici à titre d'illustration. Elle sera présenté en cours et manipulée en TD.
+
 \subsection*{Paroi simple}
 Pour une paroi simple, considérons la diffusion de vapeur à travers une couche de matériau plane et homogène d'épaisseur $e$.
 Cette diffusion résulte d'une différence de pression partielle de vapeur.
 On note :
 \begin{itemize}
   \item $A$ la superficie (m$^2$) ;
-  \item $p_{v1}$ la pression de vapeur à la face intérieure (Pa) ;
-  \item $p_{v2}$ la pression de vapeur à la face extérieure (Pa) ;
-  \item $p_{v1} > p_{v2}$ (conditions hivernales).
+  \item $p_{vi}$ la pression de vapeur à la face intérieure (Pa) ;
+  \item $p_{ve}$ la pression de vapeur à la face extérieure (Pa) ;
+  \item $p_{vi} > p_{ve}$ (conditions hivernales).
 \end{itemize}
-% [Figure : profil de pression de vapeur dans une paroi simple]
 
-La différence de pression de vapeur $(p_{v1} - p_{v2})$ entraîne alors une diffusion de la vapeur d'eau de l'intérieur vers l'extérieur.
+La différence de pression de vapeur $(p_{vi} - p_{ve})$ entraîne alors une diffusion de la vapeur d'eau de l'intérieur vers l'extérieur.
 La densité de flux de vapeur traversant la paroi sera :
 \begin{equation}
-  q_d = \frac{p_{v1} - p_{v2}}{5{,}4\times10^{9}\,\mu\,e} \qquad \mathrm{[kg/m^2.s]}
+  q_d = \frac{p_{vi} - p_{ve}}{5{,}4\times10^{9}\,\mu\,e} \qquad \mathrm{[kg/m^2.s]}
 \end{equation}
 $5{,}4\times10^{9}\,\mu\,e$ est appelé « la résistance à la diffusion » et est noté $Z$.
 On peut donc réécrire l'équation de $q_d$ sous la forme :
 \begin{equation}
-  q_d = \frac{p_{v1} - p_{v2}}{Z}
+  q_d = \frac{p_{vi} - p_{ve}}{Z}
 \end{equation}
 On pourra noter le parallèle avec la diffusion de la chaleur dans une paroi :
 \begin{equation}
   \varphi = U\,\Delta T = \frac{T_1 - T_2}{R}
 \end{equation}
 
-On peut donc obtenir une résistance à la diffusion très élevée en utilisant soit une couche mince d'un matériau ayant une valeur $\mu$ très élevée (= pare-vapeur), soit une couche épaisse d'un matériau ayant une valeur $\mu$ peu élevée.
+On peut obtenir une résistance à la diffusion très élevée en utilisant sune couche mince d'un matériau ayant une valeur $\mu$ très élevée (pare-vapeur), ou une couche épaisse d'un matériau ayant une valeur $\mu$ peu élevée.
 
-\paragraph{Exemple}
-Une paroi en briques silico-calcaires (1800\,kg/m$^3$) a une valeur $\mu$ de 15 et une épaisseur de 20\,cm. Si la pression de vapeur à l'extérieur est de 280\,Pa et celle à l'intérieur de 1320\,Pa, on aura alors la densité de flux de vapeur :
+\paragraph{Exemple} : Une paroi en briques silico-calcaires (1800\,kg/m$^3$) a une valeur $\mu$ de 15 et une épaisseur de 20\,cm. Si la pression de vapeur à l'extérieur est de 280\,Pa et celle à l'intérieur de 1320\,Pa, on aura alors la densité de flux de vapeur :
 \begin{equation}
-  q_d = \frac{p_{v1} - p_{v2}}{5{,}4\times10^{9}\,\mu\,e}
+  q_d = \frac{p_{vi} - p_{ve}}{5{,}4\times10^{9}\,\mu\,e}
       = \frac{1320 - 280}{5{,}4\times10^{9}\times 15\times 0{,}2}
 \end{equation}
 \begin{equation}
@@ -230,11 +239,11 @@ ou encore :
 \end{equation}
 La formule de la densité de flux de vapeur devient donc tout simplement :
 \begin{equation}
-  q_d = \frac{p_{v1} - p_{v2}}{5{,}4\times10^{9}\,\sum \mu\,e} \qquad \mathrm{[kg/m^2.s]}
+  q_d = \frac{p_{vi} - p_{ve}}{5{,}4\times10^{9}\,\sum \mu\,e} \qquad \mathrm{[kg/m^2.s]}
 \end{equation}
 % [Figure : paroi composée -- enduit extérieur, isolation, maçonnerie, enduit intérieur]
 
-En régime stationnaire, les quantités $q_{d1}$, $q_{d2}$, $q_{d3}$ et $q_d$ doivent être égales.
+En régime stationnaire, les quantités $q_{d1}$, $q_{d2}$, $q_{d3}$ et $q_d$ sont égales.
 En effet, si $q_{d1}$ était supérieur à $q_{d2}$, la quantité de vapeur d'eau quittant le plan 1 serait supérieure à celle qui y arrive et, dans ce cas, la pression de vapeur au droit du plan 1 ($p_{v1}$) ne pourrait rester constante.
 
 Tout plan parallèle est donc traversé par la même quantité d'humidité : $q_d = q_{d1} = q_{d2} = q_{d3}$.
@@ -270,8 +279,13 @@ On pourra donc, en fonction des besoins, tracer différents profils de températ
 Tant que $p_v$ est inférieure à $p_{vs}$, tout va bien : il n'y a pas de risque de condensation dans le mur. En revanche, dès qu'on la dépasse, il y a condensation.
 
 On peut tracer l'évolution de $p_v$, mais également du rapport de $p_v$ sur $p_{vs}$ pour tracer l'évolution de l'humidité relative (HR) au sein de la paroi.
-C'est l'évolution de HR qui est représentée sur Ubakus\footnote{Ubakus : \texttt{https://www.ubakus.de/fr/calculateur-valeur-u/}}.
+C'est l'évolution de HR qui est représentée sur Ubakus\footnote{Ubakus : \texttt{https://www.ubakus.de/fr/calculateur-valeur-u/}}. L’évolution de la température et de l'humidité relative sera expérimenté en TD via l'utilisation d'Ubakus.
 
-Étant donné que la pression de vapeur saturante dépend de la température, il faut au préalable calculer l'évolution de la température au sein de la paroi.
+Étant donné que la pression de vapeur saturante dépend de la température, il faut au préalable calculer l'évolution de la température au sein de la paroi. Lorsque l'on conçoit une typologie de paroi, il faut vérifier que la condensation ne se produit pas à l'intérieur de celle-ci dans différentes conditions (hiver et été).
 
-Lorsque l'on conçoit une typologie de paroi, il faut vérifier que la condensation ne se produit pas à l'intérieur de celle-ci dans différentes conditions (hiver et été).
+\section{Conclusion sur les transferts de vapeurs}
+L'air intérieure et extérieure contient de la vapeur d'eau. Dans un bâtiment on cherchera à ne pas trop accumuler d'humidité pour éviter des problèmes matériels et sanitaires.
+
+A detailler 
+
+Les notions de confort d’hiver et d’été qui seront sont abordées dans la suite du cours feront appel à la température mais aussi au degré d'humidité.
