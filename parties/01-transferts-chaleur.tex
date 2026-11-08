@@ -407,10 +407,25 @@ La puissance solaire maximale à la surface de la Terre est d'environ 1\,000\,W/
   \item \textbf{La hauteur} du Soleil est l'angle que fait la direction du Soleil avec le plan horizontal. Elle se compte de 0° à 90° à partir de l'horizon vers la voûte céleste.
   \item \textbf{L'azimut} du Soleil est l'angle formé entre le plan vertical passant à la fois par le Soleil et par le lieu considéré, et le plan vertical Nord Sud.
 \end{itemize}
-% [Figures : diagramme solaire SunEarthTools pour Rennes ; courses solaires à Uccle]
+
+Les figures \ref{fig:altitude} et \ref{fig:eliodo} illustrent les altitudes du soleil respectivement en fonction de l'heure de la journée et de l'azimuth, elles ont été générés avec l'outils d'AREP angle solaire\footnote{\url{https://lhypercube.arep.fr/angles_solaires/}} accessible en ligne\footnote{La voite à outil compléte d'AREP : \url{https://lhypercube.arep.fr/toolbox/}}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/s1.png}
+    \caption{Altitudes du soleil à Lille en fonction de l'heure et la période de l'année}
+    \label{fig:altitude}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/s2.png}
+    \caption{Héliodon : Altitude du soleil à Lille en fonction de l'azimuth et de la période de l'année}
+    \label{fig:eliodo}
+\end{figure}
 
 \section{Le rayonnement dans le bâtiment}
 \subsection*{Calcul du rayonnement}
+Les rayonnements sont des modes d'échanges d'énérgie qui sont complexes à calculé (notamment de part la présence de $T^4$, Ainsi il n'est bien évidement pas nécessaire de savoir les calculer en tant qu’architectes. Les trois équations suivantes sont juste présenté à titre d'exemple et d'illustration.
 D'après la loi de Stefan Boltzmann, la densité de flux rayonnée est :
 \begin{equation}
   \varphi_{\mathrm{rayonnement}} = \varepsilon\,\sigma\left(T_S^4 - T_a^4\right)
@@ -418,7 +433,7 @@ D'après la loi de Stefan Boltzmann, la densité de flux rayonnée est :
 Avec $\sigma$ est la constante de Stefan Boltzmann, $5{,}67\times10^{-8}$\,W/m$^2$.K$^4$, $\varepsilon$ est l'émissivité du matériau dont la valeur dépend du matériau et $T_S$ est la température de surface et $T_a$ la température ambiante (K).
 
 \subsection*{Exemple de bilan sur une paroi}
-Les rayonnements sont des modes d'échanges d'énérgie qui sont complexes à calculé (notamment de part la présence de $T^4$, Ainsi il n'est bien évidement pas nécessaire de savoir les calculer en tant qu’architectes. Les deux équations suivantes sont juste présenté à titre d'exemple et d'illustration 
+
 \begin{equation}
   \mathrm{Flux\ entrants} = \mathrm{Flux\ sortants}
 \end{equation}
