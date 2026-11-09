@@ -155,7 +155,7 @@ C'est une zone où la chaleur « contourne » l'isolation et circule plus facile
 \begin{itemize}
   \item \textbf{Pertes de chaleur importantes.} Un pont thermique peut représenter 20\,\% des pertes totales d'un bâtiment mal conçu.
   \item \textbf{Inconfort.} Même si l'air de la pièce est à 20\,°C, si un point de la paroi est à 14\,°C il peut y avoir une sensation de froid.
-  \item \textbf{Condensation et moisissures.} Une zone froide attire la vapeur d'eau. Si la température de surface descend sous la température de rosée, il y a condensation dans la paroi.
+  \item \textbf{Condensation et moisissures.} Une zone froide favorise la condensation. Si la température de surface descend sous la température de rosée, il y a condensation dans la paroi.
   \item \textbf{Dégradation des matériaux.} L'humidité peut entraîner l'apparition de champignons et fortement dégrader des isolants ou les peintures.
 \end{itemize}
 
@@ -262,7 +262,7 @@ La densité de flux convectif $\varphi_{\mathrm{convection}}$ est alors :
 où $h$ est le coefficient convectif (W/m$^2$.K).
 
 \subsection*{Résistance thermique superficielle}
-Dans le bâtiment, on utilise 2 coefficients de transmission thermique par convection :
+Dans le bâtiment, on utilise 2 coefficients de transmission thermique par convection:
 \begin{itemize}
   \item $h_i$ : coefficient de transmission thermique par convection entre la température de l'air intérieur $T_i$ et la température de la face interne de la paroi $T_{si}$
   \item $h_e$ : coefficient de transmission thermique par convection entre la température de l'air extérieur $T_e$ et la température de la face externe de la paroi $T_{se}$
@@ -271,7 +271,7 @@ On définit ainsi les résistances thermiques d'échanges superficiels intérieu
 \begin{equation}
   R_{si} = \frac{1}{h_i} \qquad\qquad R_{se} = \frac{1}{h_e}
 \end{equation}
-Ces grandeurs représentent les résistances thermiques des fines lames d'air en convection à la surface des enveloppes.
+Ces grandeurs représentent les résistances thermiques des fines lames d'air en convection à la surface des enveloppes.\footnote{Ces coefficients prennent également en compte le rayonnement (voir chapitre suivant), ce sont des coefficients qui agrègent la convection et le rayonnement.}
 
 \subsection*{Valeurs pour les parois}
 Les valeurs des coefficients de convection sont données dans les normes (NF EN ISO 6946:2007, utilisée dans la RT 2012 et la RE 2020).
@@ -301,7 +301,7 @@ La plupart des fluides ont une masse volumique qui diminue avec la température 
 
 \textbf{L'air chaud monte et l'air froid descend.}
 
-On observe une variation de température moyenne de 0,5\,°C par mètre \footfullcite{said1995}
+On observe une variation de température moyenne de 0,5\,°C par mètre\footfullcite{said1995}.
 
 \subsection*{Fenêtres et parois froides}
 L'air froid descend au contact des parois froides. Dans le bâtiment, il s'agit souvent des fenêtres.
@@ -331,9 +331,7 @@ Le vent crée une convection forcée à travers les défauts du bâtiment :
   \item jonctions des menuiseries
   \item toitures
 \end{itemize}
-Les pertes énergétiques par infiltration et une mauvaise étanchéité peuvent représenter 30\,\% des déperditions totales d'un bâtiment \footfullcite{ademe-batiments}
-
-Cependant, on ne cherchera pas à construire une boîte étanche notamment pour évacuer la vapeur (voir les transferts de vapeur \ref{chap:vapeur}).
+Les pertes énergétiques par infiltration et une mauvaise étanchéité peuvent représenter 30\,\% des déperditions totales d'un bâtiment \footfullcite{ademe-batiments}.
 
 % =====================================================================
 \chapter{Rayonnement}
@@ -440,8 +438,7 @@ Avec $\sigma$ est la constante de Stefan Boltzmann, $5{,}67\times10^{-8}$\,W/m$^
 Rayonnement du soleil + rayonnement du ciel = rayonnement de la surface + convection + conduction :
 \begin{equation}
   \alpha\,G + \varepsilon\sigma\left(T_{\mathrm{ciel}}^4 - T_{\mathrm{surface}}^4\right)
-  = \varepsilon\sigma\left(T_{\mathrm{surface}}^4 - T_{\mathrm{ext}}^4\right)
-  + h_e\left(T_{\mathrm{surface}} - T_{\mathrm{ext}}\right)
+  =  h_e\left(T_{\mathrm{surface}} - T_{\mathrm{ext}}\right)
   + \frac{T_{\mathrm{surface}} - T_{si}}{R_{\mathrm{paroi}}}
 \end{equation}
 Avec : $\alpha$ l'absorptivité de la surface. $G$ : irradiance solaire incidente sur la paroi (W/m$^2$). $\varepsilon$ l'émissivité thermique de la surface dans l'infrarouge. $\sigma$ la constante de Stefan Boltzmann (W/m$^2$.K$^4$). $T_{\mathrm{ciel}}$ la température radiative équivalente du ciel (K). $T_{\mathrm{surface}}$ la température de surface extérieure de la paroi (K). $T_{\mathrm{ext}}$ la température de l'air extérieur (K). $h_e$ le coefficient d'échange convectif extérieur (W/m$^2$.K). $T_{si}$ la température de surface intérieure (K). $R_{\mathrm{paroi}}$ la résistance thermique surfacique de la paroi (m$^2$.K/W).
