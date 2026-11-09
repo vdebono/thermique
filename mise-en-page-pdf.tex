@@ -62,3 +62,20 @@
 \postauthor{\par\end{center}}
 \predate{\begin{center}\large}
 \postdate{\par\end{center}}
+
+% Figures : espaces resserrés
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}       % entre deux figures qui se suivent
+\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}   % entre une figure (haut/bas de page) et le texte
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}      % autour d'une figure placée [h] dans le texte
+\setlength{\abovecaptionskip}{6pt}                   % entre l'image et sa légende
+\setlength{\belowcaptionskip}{0pt}
+% Moins de pages ne contenant que des figures, et figures en haut de ces pages
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{10pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
