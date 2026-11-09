@@ -38,7 +38,7 @@ La conductivité thermique, notée $\lambda$, est la quantité d'énergie traver
 \subsection*{La conduction en architecture}
 Comprendre la conduction aide à concevoir des parois qui limitent la propagation de la chaleur par conduction et évite de trop réchauffer ou refroidir le bâtiment.
 
-Pour cela, on utilise des isolants thermiques (qui conduisent peu la chaleur). Les matériaux isolants sont généralement des matériaux qui contiennent de l'air emprisonné dans le matériau. Cet air emprisonné limite la conduction puisque les particules sont plus espacées dans un gaz que dans un solide ; le transfert thermique par conduction est donc réduit. Les isolants sont donc souvent des matériaux assez légers, tels que des laines ou des mousses.
+Pour cela, on utilise des isolants thermiques (qui conduisent peu la chaleur). Les matériaux isolants sont généralement des matériaux qui contiennent de l'air emprisonné dans le matériau. Cet air emprisonné limite la conduction puisque les particules sont plus espacées dans un gaz que dans un solide (le transfert thermique par conduction est donc réduit). Les isolants sont donc souvent des matériaux assez légers, tels que des laines ou des mousses.
 
 \section{Loi de Fourier}
 
@@ -76,7 +76,7 @@ Le flux de chaleur est donc proportionnel à la différence de température ($\D
 \subsection*{Interprétation}
 Lorsque $\lambda$ augmente, le matériau conduit plus : il y a donc plus de pertes. Lorsque $e$ augmente, la conduction diminue : l'isolation est donc meilleure. Lorsque $\Delta T$ augmente, les pertes augmentent :
   \begin{itemize}
-    \item chauffer à 20\,°C quand il fait 0\,°C dehors : $\Delta T = 20$\,°C ;
+    \item chauffer à 20\,°C quand il fait 0\,°C dehors : $\Delta T = 20$\,°C
     \item chauffer à 20\,°C quand il fait $-10$\,°C dehors : $\Delta T = 30$\,°C.
   \end{itemize}
 
@@ -93,8 +93,8 @@ La conduction est le principal mode de transfert dans les parois opaques et donc
 \subsection*{Résistance et conductance d'une paroi}
 Dans le domaine du bâtiment, on définit deux grandeurs lorsque l'on caractérise une paroi :
 \begin{itemize}
-  \item \textbf{la résistance thermique} : $\displaystyle R = \frac{e}{\lambda}$ \quad en (m$^2$.K/W) ;
-  \item \textbf{la conductance thermique} : $\displaystyle U = \frac{\lambda}{e}$ \quad en (W/m$^2$.K).
+  \item \textbf{la résistance thermique} : $\displaystyle R = \frac{e}{\lambda}$ \quad en (m$^2$.K/W)
+  \item \textbf{la conductance thermique} : $\displaystyle U = \frac{\lambda}{e}$ \quad en (W/m$^2$.K)
 \end{itemize}
 On peut alors réécrire :
 \begin{equation}
@@ -206,7 +206,7 @@ Afin d'assurer la continuité de l'isolation, certains points peuvent être comp
 
 \subsection*{L'isolation des murs à ossature}
 L'isolation d'une structure à ossature (type poteaux-poutres) se fait bien souvent entre les poteaux (sauf si on veut choisir de laisser la structure apparente). On aura alors une isolation entre poteaux, mais bien souvent une surcouche d'isolation afin d'éviter le pont thermique au niveaux des poteaux.
-% [Figures : vue en plan ; composition d'un mur à ossature bois]
+
 
 \subsection*{L'isolation des toitures}
 L'isolation en toiture représente près de 30\,\% des pertes de chaleur. Il existe de nombreuses  techniques différentes pour isoler tous les types de toitures : combles habités ou perdus, toitures plates, terrasses, végétalisées, etc. Il est important de chercher la méthode la plus adapté au projet.
@@ -264,8 +264,8 @@ où $h$ est le coefficient convectif (W/m$^2$.K).
 \subsection*{Résistance thermique superficielle}
 Dans le bâtiment, on utilise 2 coefficients de transmission thermique par convection :
 \begin{itemize}
-  \item $h_i$ : coefficient de transmission thermique par convection entre la température de l'air intérieur $T_i$ et la température de la face interne de la paroi $T_{si}$ ;
-  \item $h_e$ : coefficient de transmission thermique par convection entre la température de l'air extérieur $T_e$ et la température de la face externe de la paroi $T_{se}$.
+  \item $h_i$ : coefficient de transmission thermique par convection entre la température de l'air intérieur $T_i$ et la température de la face interne de la paroi $T_{si}$
+  \item $h_e$ : coefficient de transmission thermique par convection entre la température de l'air extérieur $T_e$ et la température de la face externe de la paroi $T_{se}$
 \end{itemize}
 On définit ainsi les résistances thermiques d'échanges superficiels intérieur et extérieur :
 \begin{equation}
@@ -396,7 +396,7 @@ avec $P$ la puissance surfacique (W/m$^2$), $\sigma$ la constante de Stefan  Bol
 
 Le soleil rayonne, mais seulement une partie de ce rayonnement arrive à la surface de la Terre\footfullcite{energieplus-ensoleillement}
 
-Au milieu du jour, le Soleil est au-dessus de nos têtes, et ses rayons ont une faible épaisseur d'atmosphère à traverser. Au début et à la fin de la journée, le Soleil est bas sur l'horizon ; la traversée de l'atmosphère est longue. Au coucher du Soleil, les rayons sont suffisamment affaiblis pour permettre à l'œil humain de fixer le soleil sans trop d'éblouissement.
+Au milieu du jour, le Soleil est au-dessus de nos têtes, et ses rayons ont une faible épaisseur d'atmosphère à traverser. Au début et à la fin de la journée, le Soleil est bas sur l'horizon, la traversée de l'atmosphère est longue. Au coucher du Soleil, les rayons sont suffisamment affaiblis pour permettre à l'œil humain de fixer le soleil sans trop d'éblouissement.
 
 \textbf{Le rayonnement solaire reçu sur une surface varie donc au cours du temps en fonction de la position du soleil et de la couverture nuageuse.}
 
@@ -425,7 +425,7 @@ Les figures \ref{fig:altitude} et \ref{fig:eliodo} illustrent les altitudes du s
 
 \section{Le rayonnement dans le bâtiment}
 \subsection*{Calcul du rayonnement}
-Les rayonnements sont des modes d'échanges d'énérgie qui sont complexes à calculé (notamment de part la présence de $T^4$, Ainsi il n'est bien évidement pas nécessaire de savoir les calculer en tant qu’architectes. Les trois équations suivantes sont juste présenté à titre d'exemple et d'illustration.
+Les rayonnements sont des modes d'échanges d'énérgie qui sont complexes à calculé (notamment de part la présence de $T^4$) Il n'est bien évidement pas nécessaire de savoir les calculer en tant qu’architectes. Les trois équations suivantes sont juste présenté à titre d'exemple et d'illustration.
 D'après la loi de Stefan Boltzmann, la densité de flux rayonnée est :
 \begin{equation}
   \varphi_{\mathrm{rayonnement}} = \varepsilon\,\sigma\left(T_S^4 - T_a^4\right)
@@ -479,6 +479,6 @@ Concernant la conduction, ce mode de transfert de chaleur nécessite de savoir c
 
 Concernant la convection, ce mode de transport de chaleur intervient à la fois dans la conception de l’enveloppe du bâtiment (la convection fait baisser légèrement la température des parois) et dans les parois comportant une lame d’air. La convection intervient également lorsque l’architecte conçoit de grands volumes soumis à la stratification de l’air. Ainsi, dans une maison à double hauteur, et notamment dans des hangars, on cherchera à éviter que la chaleur s’accumule en partie haute.
 
-Concernant le rayonnement, la principale source utilisée en architecture est le soleil. Sans avoir besoin de faire des calculs complexes, il est du ressort de l’architecte de réfléchir à l’implantation du bâtiment, à sa géométrie et à son organisation spatiale afin de capter un maximum d’apports solaires en hiver (et bénéficier d’un chauffage gratuit), tout en s’en protégeant en été (via des protections solaires, par exemple). La prise en compte des apports solaires en conception architecturale constitue un des axes de la conception bioclimatique. Ce cours est un cours introductif à la thermique du bâtiment ; la conception bioclimatique est un autre cours dispensé en Licence 3 à l’ENSAPL, qui constitue la suite de ce cours.
+Concernant le rayonnement, la principale source utilisée en architecture est le soleil. Sans avoir besoin de faire des calculs complexes, il est du ressort de l’architecte de réfléchir à l’implantation du bâtiment, à sa géométrie et à son organisation spatiale afin de capter un maximum d’apports solaires en hiver (et bénéficier d’un chauffage gratuit), tout en s’en protégeant en été (via des protections solaires, par exemple). La prise en compte des apports solaires en conception architecturale constitue un des axes de la conception bioclimatique. Ce cours est un cours introductif à la thermique du bâtiment. La conception bioclimatique est un autre cours dispensé en Licence 3 à l’ENSAPL, qui constitue la suite de ce cours.
 
 Les notions de confort d’hiver et d’été sont abordées et détaillées dans la suite du cours \ref{Confort}.
