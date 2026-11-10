@@ -33,6 +33,17 @@
 \newtheorem{exercice}{Exercice}[chapter]
 \newtheorem*{corrige}{Corrigé}
 
+% ----- Encadrés -----
+% \begin{encadre}{Pour aller plus loin} … \end{encadre}
+% (« block » fonctionne aussi, pour reprendre directement un bloc de diaporama Beamer)
+\usepackage[most]{tcolorbox}
+\tcbset{encadre/.style={enhanced, breakable, arc=0pt, boxrule=0.5pt,
+  colback=white, colframe=black, colbacktitle=black!8, coltitle=black,
+  fonttitle=\bfseries, left=8pt, right=8pt, top=5pt, bottom=5pt,
+  before skip=1em, after skip=1em}}
+\newtcolorbox{encadre}[1]{encadre, title={#1}}
+\newtcolorbox{block}[1]{encadre, title={#1}}
+
 % Vos macros
 \newcommand{\unite}[1]{\,\mathrm{#1}}
 \input{mise-en-page-pdf}
