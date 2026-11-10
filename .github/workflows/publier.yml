@@ -409,6 +409,15 @@ jobs:
                   attr, blocs = x["c"]
                   classes = attr[1]
                   blocs = numeroter_contenu(blocs)
+                  if ("encadre" in classes or "block" in classes) and blocs and blocs[0]["t"] == "Para":
+                      # Le titre de l'encadré ({Pour aller plus loin}) devient un paragraphe à part
+                      premier = blocs[0]["c"]
+                      if premier and premier[0]["t"] == "Span" and premier[0]["c"][0] == ["", [], []]:
+                          titre = {"t": "Para", "c": premier[0]["c"][1]}
+                          reste = premier[1:]
+                          while reste and reste[0]["t"] in ("Space", "SoftBreak"):
+                              reste = reste[1:]
+                          blocs = [titre] + ([{"t": "Para", "c": reste}] if reste else []) + blocs[1:]
                   if "exercice" in classes or "corrige" in classes:
                       # Retirer l'en-tête « Exercice 1.1. » ajouté par Pandoc
                       if blocs and blocs[0]["t"] == "Para" and blocs[0]["c"] and blocs[0]["c"][0]["t"] == "Strong":
@@ -641,6 +650,9 @@ jobs:
             .footnote-ref sup {{ font-size: .75em; }}
             #refs .csl-entry {{ padding-left: 1.6em; text-indent: -1.6em; margin-bottom: .6em; }}
             .exercice {{ border: 1px solid #000; border-left-width: 3px; padding: .2rem 1rem; margin: 1.5rem 0 .5rem; }}
+            .encadre, .block {{ border: 1px solid #000; padding: 0 1rem .2rem; margin: 1.5rem 0; }}
+            .encadre > p:first-child, .block > p:first-child {{ font-weight: bold; margin: 0 -1rem .6rem; padding: .35rem 1rem;
+                                                               background: #ececec; border-bottom: 1px solid #000; }}
             .exercice .titre-encadre {{ font-weight: bold; }}
             details.corrige {{ border: 1px solid #000; border-left-width: 3px; padding: .5rem 1rem; margin: 0 0 1.5rem; }}
             details.corrige summary {{ cursor: pointer; font-weight: bold; }}
