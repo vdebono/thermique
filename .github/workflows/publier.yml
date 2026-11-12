@@ -232,6 +232,21 @@ jobs:
 
           if BIBS:
               options_bib = ["--citeproc", "-M", "lang=fr"]
+
+              # Style auteur-année (Chicago) légèrement adapté :
+              #  - pas de « ——— » à la place d'un auteur répété (illisible dans une note isolée) ;
+              #  - pas de seconde date après le nom du site pour les pages web et vidéos.
+              try:
+                  csl = subprocess.run(["pandoc", "--print-default-data-file", "default.csl"],
+                                       check=True, capture_output=True, text=True).stdout
+                  csl = re.sub(r'\s+subsequent-author-substitute="[^"]*"', "", csl)
+                  csl = re.sub(r'<choose>\s*<if type="webpage post-weblog" match="any">\s*'
+                               r'<date variable="issued" form="text"/>\s*</if>\s*</choose>', "", csl)
+                  with open("_construction/style.csl", "w", encoding="utf-8") as f:
+                      f.write(csl)
+                  options_bib += ["--csl", os.path.abspath("_construction/style.csl")]
+              except (subprocess.CalledProcessError, OSError):
+                  pass
               for b in BIBS:
                   options_bib += ["--bibliography", os.path.join(RACINE, b)]
 
