@@ -1,29 +1,56 @@
 % =====================================================================
 \part{Thermique architecturale}
 % =====================================================================
-Le titre de cette partie n'est peut-être pas le bon. L'objectif dans cette partie est de revenir au projet maintenant que les concepts physiques ont été présentés dans les parties précédentes. Ainsi il sera question de régime dynamique (prise en compte de l'évolution de la température au cours du temps) mais aussi de présenter davantage l'enveloppe (Notez que l'Enveloppe est un cours à part entière de Licence 3 à l'ENSAPL, il n'est donc pas approfondi dans ce document) pour ensuite parler de confort des usagers et présenter les équipements usuels d'un bâtiment.
+Le titre de cette partie n'est peut-être pas le bon (il reste à trouver). L'objectif dans cette partie est de revenir au projet maintenant que les concepts physiques ont été présentés dans les parties précédentes. Ainsi il sera question de régime dynamique (prise en compte de l'évolution de la température au cours du temps) mais aussi de présenter davantage l'enveloppe (Notez que l'Enveloppe est un cours à part entière de Licence 3 à l'ENSAPL tout comme la conception bioclimatique, ils ne sont donc pas approfondi dans ce document) pour ensuite parler de confort des usagers et présenter les équipements usuels d'un bâtiment.
 
 \chapter{Bâtiment}
-\section{Bilan energetique}
-\section{Regime dynamique}
+\section{Bilan énergétique}
+A écrire
+\section{Régime dynamique}
 Contrairement au régime permanent (étudié dans les chapitres précédents), le régime dynamique cherche à étudier la variation de température au cours du temps. Le régime dynamique est donc plus représentatif de ce qu'il se passe dans la vie d'un bâtiment à l’échelle de l'heure, de la journée ou de la saison.
 Le formalisme physique du régime dynamique n'est pas présenté dans ce cours mais sera manipulé en TD.
 
 Pour plus d'informations, le formalisme est présenté dans le chapitre 6 Manuel de performance énergétique des bâtiments\footfullcite{rouchier-manuel}.
+
 \chapter{Enveloppe}
+A écrire
 
 \chapter{Confort}
+Le confort thermique dépend de six paramètres principaux : la température de l'air, la température des parois, l'humidité de l'air, la vitesse de l'air, l'activité des usagers et tenues vestimentaires.
+On peut représenter schématiquement un polygone de confort thermique sur le diagramme de l'air humide (voir figure \ref{Confort}). Ce polygone n'est pas tout à fait le même en hiver et en été, notamment parce que l'habillement change. On essayera de faire en sorte que l'air intérieur de nos projets reste dans ce polygone de confort toute l'année. Pour cela, on pourra utiliser des stratégies passives, par exemple l'ouverture des fenêtres la nuit en été pour aérer et faire baisser la température, ou les apports internes pour chauffer le bâtiment en hiver (détaillé dans le TD1). On pourra aussi utiliser des systèmes actifs : chauffage, climatisation, et ventilation mécanique (VMC) pour le renouvellement de l'air. La conception bioclimatique fait l'objet d'un autre cours à l'ENSAPL en Licence 3 et n'est pas détaillée ici. La conclusion de cette partie donne néanmoins quelques repères pour assurer un confort en été et en hiver sans nécessairement recourir à des systèmes actifs.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/confort.jpg}
+    \caption{Zone de confort schématique sans vitesse d'air.\\
+    1 Zone à éviter vis-à-vis des problèmes de sécheresse\\
+2 et 3 : Zones à éviter vis-à-vis des développements de bactéries et de microchampignons\\
+4 Zone à éviter vis-à-vis des développements d’acariens\\
+5 Polygone de confort hygrothermique.\\
+Crédit : Énergie plus\footfullcite{energieplus}}
+    \label{fig:conf}
+\end{figure}
 \label{Confort}
 
 \section{Confort d'hiver}
+A détailler. Pour les curieux/impatients voir ADEME \href{https://librairie.ademe.fr/energies/7722-comment-passer-un-hiver-tout-confort--9791029726132.html}{\textit{Comment passer un hiver tout confort ?}}
 
 \section{Confort d'été}
+A détailler. Pour les curieux/impatients voir ADEME \href{https://librairie.ademe.fr/batiment/7208-comment-garder-son-logement-frais-tout-l-ete--9791029726705.html}{\textit{Comment garder son logement frais tout l'été ?}}
+
+\subsection*{La végétation}
+A écrire
 \subsection*{Les brasseurs d'air}
-Un brasseur d'air peut fonctionner en mode été ou en mode hiver.
-% [Figures : brasseur d'air en mode été / mode hiver]
-Pour aller plus loin, voir les études de l'ADEME\footnote{ADEME, \emph{BRASSE : brasseurs d'air, une solution de sobriété et d'efficacité}, 2024 ; ADEME, \emph{BRASSE II : base de données des performances de 50 brasseurs d'air plafonniers à pales}, 2026. \texttt{https://librairie.ademe.fr}}.
+Un brasseur d'air ne fait pas baisser la température de l'air, mais le met en mouvement. Ce « courant d'air » refroidit la peau de deux façons. D'une part, il évacue la chaleur de la peau par convection forcée, tant que l'air est plus froid que la peau. D'autre part, il remplace en permanence l'air humide au contact de la peau par un air plus sec, ce qui accélère l'évaporation de la transpiration. Pour s'évaporer, l'eau change d'état et prélève de l'énergie thermique sur la peau : la peau se refroidit et nous avons moins chaud, sans que la température ambiante ait baissé. Le confort dépend donc de la vitesse de circulation de l'air. On peut retenir, en ordre de grandeur, qu'une vitesse d'air de 1\,m/s correspond à une température ressentie inférieure de 2 à 4\,°C à la température de l'air\footfullcite{song2021airvelocity}. Cet effet diminue lorsque l'air est très humide ou lorsque sa température se rapproche de celle de la peau. La figure \ref{fig:confortvent} illustre schématiquement le confort en fonction de la vitesse de l'air.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/Confortventilateur.png}
+    \caption{Schéma illustrant le confort en fonction de la vitesse de l'air. Crédit Guillaume Meunier}
+    \label{fig:confortvent}
+\end{figure}
+Pour aller plus loin, voir les études de l'ADEME\footfullcite{ademe-brasse2024} et la dernière étude qui compare différents modèles de brasseurs d'air \footfullcite{ademe-brasse2026}.
 
-
+Pour aller plus loin sur l'historique du diagramme de l'air humide (ou diagramme psychrométrique) et la notion de confort \footfullcite{izard-kacala-diagramme}.\\
+Diagramme de l'air humide en ligne \url{https://drajmarsh.bitbucket.io/psychro-chart2d.html}
 \chapter{Équipements}
 
 \section{Ventilation mécanique contrôlée (VMC)}
@@ -31,7 +58,7 @@ Pour aller plus loin, voir les études de l'ADEME\footnote{ADEME, \emph{BRASSE :
 \section{Chauffage}
 
 \section{Climatisation}
-À détailler sur la climatisation \footfullcite{reveilleur-climatisation}\\
+
 La climatisation consomme de l'énergie, utilise des fluides frigorigènes qui sont souvent de puissants gaz à effet de serre et rejette de la chaleur à l'extérieur, ce qui renforce les îlots de chaleur urbains. Avant de l'envisager, il faut donc d'abord réduire le besoin de froid grâce à la conception architecturale. Les voici par ordre d'importance :
 \begin{enumerate}
     \item Limiter les apports solaires via des protections solaires extérieures
@@ -45,4 +72,41 @@ Ces leviers sont des leviers d'adaptation ; il est bien évidemment essentiel de
 
 Lorsque ces 5 leviers ne suffisent plus à apporter un confort suffisant, il peut être nécessaire de recourir à une climatisation active. Les avoir mis en place au préalable permet au projet de ne pas se réchauffer en excès, et donc d'assurer une utilisation « raisonnée » de la climatisation. Dans des projets, si la climatisation est assurée par une pompe à chaleur réversible, utilisée à la fois pour le froid en été et pour le chauffage en hiver, son impact global peut être réduit, notamment si elle remplace un système de chauffage plus émetteur. Il faut cependant rester vigilant à l'effet rebond : un équipement disponible a tendance à être davantage utilisé.
 
-\chapter{Conclusion sur la thermique architecturale}
+Pour aller plus loin sur la climatisaion, voir la vidéo du Réveilleur (Rodolphe Mayer) \footfullcite{reveilleur-climatisation}\\
+\section{Réseaux de chaleur collectifs}
+Les réseaux de chaleur sont des installations qui distribuent de la chaleur à plusieurs usagers, à partir d'une ou plusieurs unités de production (chaufferies), via des canalisations. De même il existe des réseaux de froid, qui fonctionnent sur le même principe à partir de centrales de froid\footnote{Un réseau de froid ne produit pas de froid à proprement parler : il extrait la chaleur des bâtiments et l'évacue ailleurs.}. La chaleur distribuée est principalement utilisée pour le chauffage des bâtiments et la production d'eau chaude sanitaire. Le réseau de chaleur est un système de chauffage à l'échelle d'un quartier ou d'une ville. Il permet de mutualiser des sources d'énergie difficiles à exploiter à l'échelle d'un seul bâtiment : géothermie, biomasse ou chaleur de récupération (incinération des déchets, industrie, data centers...)
+
+\subsection*{Réseaux de chaleurs}
+Dans la métropole de Lille, 5 réseaux de chaleurs desservent une partie des communes de la métropole \footfullcite{mel-reseaux-chaleur} avec les mix énergétique ci dessous.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/MEL.png}
+    \caption{Mix énergétique des 5 réseaux de chaleurs de la MEL, issu de \url{https://www.lillemetropole.fr/les-reseaux-de-chaleur-urbains}}
+    \label{fig:mel}
+\end{figure}
+
+\subsection*{Réseaux de froids}
+Exemple avec le réseaux de froid de Paris. 
+Vidéos par Brut \textit{Sous Paris : la plus grande clim' d’Europe marche à l'eau de Seine}\url{https://www.brut.media/fr/videos/environnement/changement-climatique/sous-paris-la-plus-grande-clim-d-europe-marche-a-l-eau-de-seine}
+
+\chapter{Conclusion et «guide» pour le confort d'hiver et d'été}
+Le confort thermique dépend de six paramètres principaux : la température de l'air, la température des parois, l'humidité de l'air, la vitesse de l'air, l'activité des usagers et tenues vestimentaires.\\
+Pour synthétiser, afin d'assurer le confort des usagers en hiver tout en limitant les besoins de chauffage, il est nécessaire de :
+\begin{enumerate}
+    \item Capter les apports solaires gratuits
+    \item Privilégié une volumétrie compacte
+    \item Isoler thermiquement l'enveloppe des espaces chauffés de manière continue (toiture, murs, plancher bas et menuiseries performantes)
+    \item Traiter les ponts thermiques
+    \item Assurer l'étanchéité à l'air de l'enveloppe pour limiter les infiltrations
+    \item Mettre en œuvre une stratégie d'inertie thermique pour stocker les apports solaires et internes
+\end{enumerate}
+Pour synthétiser, afin d'assurer le confort des usagers en été, avant d'envisager la climatisation, il est nécessaire de :
+\begin{enumerate}
+    \item Limiter les apports solaires via des protections solaires extérieures
+    \item Limiter les apports internes si possible
+    \item Isoler thermiquement pour limiter les apports externes
+    \item Mettre en œuvre une stratégie d'inertie thermique et amener du déphasage
+    \item Évacuer la chaleur stockée la nuit grâce à la surventilation nocturne
+    \item Améliorer le confort grâce aux brasseurs d'air
+\end{enumerate}
