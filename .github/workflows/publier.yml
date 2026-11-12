@@ -376,7 +376,7 @@ jobs:
           # 2. Numérotation
           # ---------------------------------------------------------------------------
           numeros = {}          # étiquette -> numéro affiché
-          c = {"partie": 0, "chap": 0, "sec": 0, "ssec": 0, "eq": 0, "fig": 0, "ex": 0}
+          c = {"partie": 0, "chap": 0, "sec": 0, "ssec": 0, "eq": 0, "fig": 0, "tab": 0, "ex": 0}
           chapitre_courant = ["0"]
 
 
@@ -409,6 +409,17 @@ jobs:
                       return {"t": "Span", "c": [[etiquettes[0], ["equation"], []], [x]]}
                   return x
 
+              if t == "Table":
+                  # Tableau avec légende : numéroté comme dans le PDF (Tableau 2.1.1)
+                  legende = x["c"][1]
+                  if legende[1] and legende[1][0]["t"] in ("Plain", "Para") and legende[1][0]["c"]:
+                      c["tab"] += 1
+                      num = "%s.%d" % (ch, c["tab"])
+                      if x["c"][0][0]:
+                          numeros[x["c"][0][0]] = num
+                      legende[1][0]["c"] = [span("numero", [str_("Tableau %s" % num)]), str_(" :"), {"t": "Space"}] + legende[1][0]["c"]
+                  return x
+
               if t == "Figure":
                   attr, legende, contenu = x["c"]
                   c["fig"] += 1
@@ -423,7 +434,11 @@ jobs:
               if t == "Div":
                   attr, blocs = x["c"]
                   classes = attr[1]
+                  tableaux_avant = c["tab"]
                   blocs = numeroter_contenu(blocs)
+                  if attr[0] and c["tab"] > tableaux_avant and attr[0] not in numeros:
+                      # \label placé dans l'environnement table : Pandoc le met sur un bloc englobant
+                      numeros[attr[0]] = "%s.%d" % (ch, tableaux_avant + 1)
                   if ("encadre" in classes or "block" in classes) and blocs and blocs[0]["t"] == "Para":
                       # Le titre de l'encadré ({Pour aller plus loin}) devient un paragraphe à part
                       premier = blocs[0]["c"]
@@ -473,13 +488,13 @@ jobs:
                       num = numero_partie(c["partie"])
                   elif niveau == 2 and not sans_numero:
                       c["chap"] += 1
-                      c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
+                      c.update(sec=0, ssec=0, eq=0, fig=0, tab=0, ex=0)
                       num = str(c["chap"])
                       if CHAP_PREFIXE and c["partie"] > 0:
                           num = "%s.%d" % (numero_partie(c["partie"]), c["chap"])
                       chapitre_courant[0] = num
                   elif niveau == 2:
-                      c.update(sec=0, ssec=0, eq=0, fig=0, ex=0)
+                      c.update(sec=0, ssec=0, eq=0, fig=0, tab=0, ex=0)
                       chapitre_courant[0] = "*"
                   elif niveau == 3 and not sans_numero and chapitre_courant[0] != "*":
                       c["sec"] += 1
@@ -651,6 +666,12 @@ jobs:
             .livre-contenu h4 {{ font-size: 1.1rem; margin-top: 1.2rem; }}
             .livre-contenu .numero {{ margin-right: .3rem; }}
             .livre-contenu figcaption .numero {{ margin-right: 0; }}
+            .livre-contenu table {{ border-collapse: collapse; margin: 1.4rem auto; font-size: .95rem; min-width: 60%; }}
+            .livre-contenu caption {{ caption-side: top; font-size: .9rem; margin-bottom: .5rem; text-align: center; }}
+            .livre-contenu caption .numero {{ margin-right: 0; }}
+            .livre-contenu th, .livre-contenu td {{ padding: .3rem .8rem; border-bottom: 1px solid #bbb; text-align: left; }}
+            .livre-contenu thead th, .livre-contenu tr:first-child td {{ border-top: 1px solid #000; }}
+            .livre-contenu tbody tr:last-child td {{ border-bottom: 1px solid #000; }}
             .titre-couverture {{ font-size: 2rem; line-height: 1.25; margin: 0 0 .5rem; border: none; }}
             .auteur-couverture {{ font-size: 1.1rem; margin: 0; }}
             .date-couverture {{ color: #555; margin: .2rem 0 2rem; }}
